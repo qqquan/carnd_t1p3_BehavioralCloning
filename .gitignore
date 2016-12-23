@@ -1,0 +1,13 @@
+﻿.ipynb_checkpoints
+models
+*.swp
+*.p
+.~lock*
+simulator
+recordings
+__pycache__
+*.zip
+backups
+checkpoint
+checkpoints
+*.pyc
