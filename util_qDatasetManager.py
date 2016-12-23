@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import cv2
 
-IMG_SCALE = 0.5
+IMG_SCALE = 0.5 
 
 def normalizeImg(np_images):
 
@@ -129,7 +129,7 @@ class qDatasetManager:
 
 
 
-    def augmentNumpyDataset(self, compen_ratio = 0.1):
+    def augmentNumpyDataset(self ):
         np_center_img = self.getCenterImgLocList()
         np_left_img = self.getLeftImgLocList()
         np_right_img = self.getRightImgLocList()
@@ -139,10 +139,9 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_compen = compen_ratio * np.absolute(np_angle_center)
         np_angle_offset = 0.08 # 2 degree:  0.04 - 1 degree; 
-        np_angle_left = np_angle_center + np_angle_compen + np_angle_offset #the left camera sees a image that requires right turn
-        np_angle_right = np_angle_center - np_angle_compen - np_angle_offset
+        np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
+        np_angle_right = np_angle_center - np_angle_offset
 
         np_angle_augm = np.concatenate([np_angle_center, np_angle_left, np_angle_right])
 
