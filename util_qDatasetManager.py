@@ -20,8 +20,8 @@ def prepImg(a_image, scale = IMG_SCALE):
 
     a_image = cropRoadImage(a_image)
     img_resi = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
-
-    return normalizeImg(img_resi)
+    img_resi_norm = normalizeImg(img_resi)
+    return img_resi_norm
 
 #drop angles that's less than a threshold
 def prepAngle(np_angles):
@@ -139,7 +139,7 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_offset = 0.08 # 2 degree:  0.04 - 1 degree; 
+        np_angle_offset = 0.04 # 1 degree:  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset
 
@@ -168,7 +168,7 @@ class qDatasetManager:
 
                 else:
                     assert(num_total > batch_size)
-                    end_idx = num_total # take whatever left, altought having fewer than batch_size
+                    end_idx = num_total # take whatever left, although having fewer than batch_size
 
 
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
@@ -307,7 +307,7 @@ def main():
         if (test_count > (dataset_mgr.getInputNum()/TST_BatchSize)):
             break #get out of infinate generator after all samples are debugged
 
-    TST_img_idx = 1 
+    TST_img_idx = 2 
     np_img_loc_array = dataset_mgr.getImgLocArray()
     print("center img: ", np_img_loc_array[TST_img_idx ])
     print("left img: ", np_img_loc_array[TST_img_idx + TST_SampleSize])
@@ -318,9 +318,9 @@ def main():
     print("left angle: ", np_angle_augm[TST_img_idx + TST_SampleSize])
     print("right angle: ", np_angle_augm[TST_img_idx + 2*TST_SampleSize])
 
-    print("all center angles: ", np_angle_augm[0: TST_SampleSize])
-    print("all left angles: ", np_angle_augm[TST_SampleSize:2*TST_SampleSize])
-    print("all right angles: ", np_angle_augm[2*TST_SampleSize:])
+    print("all center angles: \n", np_angle_augm[0: TST_SampleSize])
+    print("all left angles: \n", np_angle_augm[TST_SampleSize:2*TST_SampleSize])
+    print("all right angles: \n", np_angle_augm[2*TST_SampleSize:])
 
     print("Image Scale: ", dataset_mgr.getImgScale())
 

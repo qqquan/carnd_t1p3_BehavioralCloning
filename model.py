@@ -54,7 +54,7 @@ class qModelTrainer:
                                      name='cnn0',
                                      input_shape = self.InputShape
                                     )
-                       )  
+                       )
 
         self.model.add(ELU())
     
@@ -93,11 +93,11 @@ class qModelTrainer:
         self.model.add(ELU())
         # self.model.add(MaxPooling2D( (2,2) ))
 
-        self.model.add(Dropout(0.3))
 
         #FC0
         self.model.add(Flatten(name='fc0_flatten'))
         self.model.add(Dense(1164,name='fc0'))
+        self.model.add(Dropout(0.3))
         self.model.add(ELU())
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
@@ -110,9 +110,10 @@ class qModelTrainer:
         self.model.add(Dense(1, name='fc7'))
 
 
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+        # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
+        # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
+        self.model.compile(loss='mse', optimizer='adam', metrics=['accuracy']) #use the default learning rate to follow drive.py
 
 
         print('cnn0: ', self.model.get_layer(name="cnn0").output_shape)
@@ -144,7 +145,7 @@ class qModelTrainer:
             else:
                 history = self.model.fit_generator(generator(batch_size=64), num_samples, 1)
 
-            print("Epoch: ", i)    
+            print("Epoch: ", i+1)    
             self.saveModel()
 
 
