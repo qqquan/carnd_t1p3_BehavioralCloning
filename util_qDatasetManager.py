@@ -190,7 +190,6 @@ class qDatasetManager:
 
         np_yy = self.getValidationY() # full reference output
         num_total = len(np_yy) #TODO: use a private constant to store num of validation points
-        print('np_angle_y_Vali.size: ', num_total)
 
         batch_start_idx = range(0, num_total, batch_size)
 
