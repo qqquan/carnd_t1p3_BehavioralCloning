@@ -214,8 +214,8 @@ def main():
 
     args = getArgs()
 
-    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
-    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
+    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
+    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
     
 
