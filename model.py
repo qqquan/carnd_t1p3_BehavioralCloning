@@ -69,6 +69,7 @@ class qModelTrainer:
                                          name='cnn1',
                                         )
                           )
+        self.model.add(MaxPooling2D( (2,2) ))
         self.model.add(ELU())
 
 
@@ -90,7 +91,6 @@ class qModelTrainer:
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
         self.model.add(MaxPooling2D( (2,2) ))
         self.model.add(ELU())
-        # self.model.add(MaxPooling2D( (2,2) ))
 
         self.model.add(ActivityRegularization())
 
@@ -108,6 +108,8 @@ class qModelTrainer:
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
+        self.model.add(Activation('tanh'))
+
 
 
         # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
