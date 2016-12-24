@@ -47,7 +47,7 @@ def getCrossValiSets(X, y, training_len=0.75):
 
     import sklearn.model_selection
 
-    X_Train, X_Vali, y_Trnp_angle_filteredain, y_Vali =  sklearn.model_selection.train_test_split(  X, 
+    X_Train, X_Vali, y_Train, y_Vali =  sklearn.model_selection.train_test_split(  X, 
                                                                                     y, 
                                                                                     train_size =0.75, 
 
@@ -117,6 +117,9 @@ class qDatasetManager:
             self.np_sim_sheet = self.np_sim_sheet[0:debug_size]
 
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
+
+        (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
+
 
         self.np_images_center = np.array([]) 
         self.np_images_left = np.array([]) 
@@ -221,12 +224,12 @@ class qDatasetManager:
 
                         
     def getY(self):
-        angle_list = self.np_angle_augm
+        angle_list = self.np_angle_y_Train
         angle_list_dim_correction = np.expand_dims(angle_list, axis=1)
         return angle_list_dim_correction
 
     def getImgLocArray(self):
-        return self.np_img_loc_augm
+        return self.np_img_loc_X_Train
 
     def getImg(self):
 
@@ -307,20 +310,13 @@ def main():
         if (test_count > (dataset_mgr.getInputNum()/TST_BatchSize)):
             break #get out of infinate generator after all samples are debugged
 
-    TST_img_idx = 2 
+    TST_img_idx = 1 
     np_img_loc_array = dataset_mgr.getImgLocArray()
-    print("center img: ", np_img_loc_array[TST_img_idx ])
-    print("left img: ", np_img_loc_array[TST_img_idx + TST_SampleSize])
-    print("right img: ", np_img_loc_array[TST_img_idx + 2*TST_SampleSize])
+    print(" img: ", np_img_loc_array[TST_img_idx ])
 
-    np_angle_augm = dataset_mgr.getY()
-    print("center angle: ", np_angle_augm[TST_img_idx ])
-    print("left angle: ", np_angle_augm[TST_img_idx + TST_SampleSize])
-    print("right angle: ", np_angle_augm[TST_img_idx + 2*TST_SampleSize])
-
-    print("all center angles: \n", np_angle_augm[0: TST_SampleSize])
-    print("all left angles: \n", np_angle_augm[TST_SampleSize:2*TST_SampleSize])
-    print("all right angles: \n", np_angle_augm[2*TST_SampleSize:])
+    np_angle = dataset_mgr.getY()
+    print(" angle: ", np_angle[TST_img_idx ])
+ 
 
     print("Image Scale: ", dataset_mgr.getImgScale())
 
