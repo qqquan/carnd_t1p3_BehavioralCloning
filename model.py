@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 from util_qDatasetManager import qDatasetManager
 from keras.models import Sequential
-from keras.layers import Input, Dense, Activation, Flatten, Dropout, ELU
+from keras.layers import Input, Dense, Activation, Flatten, Dropout, ELU, ActivityRegularization
 from keras.layers import Convolution2D, MaxPooling2D
 import keras
 from time import strftime
@@ -57,8 +57,9 @@ class qModelTrainer:
                        )
 
         self.model.add(ELU())
-    
-        self.model.add(MaxPooling2D( (2,2) ))
+   
+        self.model.add(Dropout(0.3))
+
 
 
         self.model.add(Convolution2D(    nb_filter= 36, 
@@ -70,7 +71,6 @@ class qModelTrainer:
                           )
         self.model.add(ELU())
 
-        self.model.add(MaxPooling2D( (2,2) ))
 
 
         self.model.add(Convolution2D(    nb_filter= 48, 
@@ -82,17 +82,17 @@ class qModelTrainer:
                                         )
                           )
         self.model.add(ELU())
-        # self.model.add(MaxPooling2D( (2,2) ))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3'))
         self.model.add(ELU())
-        # self.model.add(MaxPooling2D( (2,2) ))
 
     
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
+        self.model.add(MaxPooling2D( (2,2) ))
         self.model.add(ELU())
         # self.model.add(MaxPooling2D( (2,2) ))
 
+        self.model.add(ActivityRegularization())
 
         #FC0
         self.model.add(Flatten(name='fc0_flatten'))
