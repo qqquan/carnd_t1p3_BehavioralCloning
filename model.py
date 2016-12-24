@@ -123,27 +123,32 @@ class qModelTrainer:
         print('cnn4: ', self.model.get_layer(name="cnn4").output_shape)
 
     def trainModel(self, epoch):
-        generator = self.DatasetMgr.runBatchGenerator
+        generator_train = self.DatasetMgr.runBatchGenerator
+        generator_vali = self.DatasetMgr.runValiBatchGenerator
+
         num_samples = self.DatasetMgr.getInputNum()
+        num_vali_samples = len(self.DatasetMgr.getValidationY())
         # if generator == None:
         #     history = self.model.fit(self.X_Train , self.y_Train , nb_epoch=epoch, batch_size=64,  validation_split=0.2 ,shuffle=True, verbose = 2)
         # else:
 
         if num_samples< 64: # debugging
-            history = self.model.fit_generator(generator(batch_size=1), num_samples, epoch)
+            history = self.model.fit_generator(generator_train(batch_size=1), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
         else:
-            history = self.model.fit_generator(generator(batch_size=64), num_samples, epoch)
+            history = self.model.fit_generator(generator_train(batch_size=64), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
     def trainModel_SavePerEpoch(self, epoch):
-        generator = self.DatasetMgr.runBatchGenerator
+        generator_train = self.DatasetMgr.runBatchGenerator
+        generator_vali = self.DatasetMgr.runValiBatchGenerator
         num_samples = self.DatasetMgr.getInputNum()
+        num_vali_samples = len(self.DatasetMgr.getValidationY())
 
         for i in range(epoch):
             if num_samples< 64: # debugging
 
-                history = self.model.fit_generator(generator(batch_size=1), num_samples, 1)
+                history = self.model.fit_generator(generator_train(batch_size=1), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
             else:
-                history = self.model.fit_generator(generator(batch_size=64), num_samples, 1)
+                history = self.model.fit_generator(generator_train(batch_size=64), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
             print("Epoch: ", i+1)    
             self.saveModel()
@@ -209,8 +214,8 @@ def main():
 
     args = getArgs()
 
-    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
-    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
+    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
+    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
     
 

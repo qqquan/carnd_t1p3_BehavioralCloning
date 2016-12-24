@@ -182,6 +182,41 @@ class qDatasetManager:
 
                 yield (np_x, np_y)
 
+    def runValiBatchGenerator(self, batch_size=int(64*0.25)): #TODO: currently 25% of dataset is allocated for validation. make it configurable.
+
+
+        np_xx_loc = self.np_img_loc_X_Vali
+
+
+        np_yy = self.getValidationY() # full reference output
+        num_total = len(np_yy) #TODO: use a private constant to store num of validation points
+        print('np_angle_y_Vali.size: ', num_total)
+
+        batch_start_idx = range(0, num_total, batch_size)
+
+        while True:
+            for start_idx in batch_start_idx:
+
+                ls_x_loc = []
+                end_idx = 0
+                if (start_idx+batch_size) < num_total:
+                    end_idx = start_idx+batch_size
+
+                elif (num_total > batch_size):
+                    end_idx = num_total # take whatever left, although having fewer than batch_size
+                elif (num_total < batch_size):
+                    end_idx = batch_size
+
+
+                ls_x_loc = np_xx_loc[start_idx:end_idx]
+
+                np_x = loadImgToNumpy(ls_x_loc, self.img_scale)
+
+                np_y = np_yy[start_idx:end_idx]
+
+                yield (np_x, np_y)
+
+
 
 
     def loadDataToMemory(self):
@@ -225,8 +260,8 @@ class qDatasetManager:
                         
     def getY(self):
         angle_list = self.np_angle_y_Train
-        angle_list_dim_correction = np.expand_dims(angle_list, axis=1)
-        return angle_list_dim_correction
+        ls_angle_dim_correction = np.expand_dims(angle_list, axis=1)
+        return ls_angle_dim_correction
 
     def getImgLocArray(self):
         return self.np_img_loc_X_Train
@@ -245,8 +280,12 @@ class qDatasetManager:
     def getValidatoinX(self):
         return self.X_Vali
 
+
+    #return validation angles of shape (none,num_of_elements)
     def getValidationY(self):
-        return self.y_Vali  
+
+        np2d_ValiY = np.expand_dims(self.np_angle_y_Vali, axis=1)
+        return np2d_ValiY
 
     def getInputShape(self): 
         a_img = loadImgToNumpy([self.np_sim_sheet[0,0]], self.img_scale)  #example for calculating the image shape
@@ -254,6 +293,7 @@ class qDatasetManager:
 
     def getInputNum(self):
         return len(self.getY())
+
 
 def main():
 
@@ -320,6 +360,19 @@ def main():
 
     print("Image Scale: ", dataset_mgr.getImgScale())
 
+
+    validation_data = dataset_mgr.runValiBatchGenerator()
+    # validation_data = dataset_mgr.runBatchGenerator
+
+        # avoid any explicit version checks
+    val_gen = (hasattr(validation_data, 'next') or
+               hasattr(validation_data, '__next__'))
+
+
+    print('val_gen', val_gen)
+
+
+    next(validation_data)
 
 
 if __name__ == "__main__": main()
