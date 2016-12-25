@@ -195,7 +195,24 @@ class qModelTrainer:
 
 
 def getArgs():
-    parser = argparse.ArgumentParser(description='Steering angle model trainer')
+    parser = argparse.ArgumentParser(dtion='Steering angle model trainer')
+    parser.add_argument('--epoch', type=int, default=5, help='Number of epochs.')
+    parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
+
+    args = parser.parse_args()
+
+    return args
+
+def main():
+    import time
+
+    time_start = time.time()
+
+    args = getArgs()
+
+    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
+    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
+escription='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=5, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
 
