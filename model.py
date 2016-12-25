@@ -69,7 +69,6 @@ class qModelTrainer:
                                          name='cnn1',
                                         )
                           )
-        self.model.add(MaxPooling2D( (2,2) ))
         self.model.add(ELU())
 
 
@@ -89,14 +88,12 @@ class qModelTrainer:
 
     
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
-        self.model.add(MaxPooling2D( (2,2) ))
         self.model.add(ELU())
 
         self.model.add(ActivityRegularization())
 
         #FC0
         self.model.add(Flatten(name='fc0_flatten'))
-        self.model.add(Dense(1164,name='fc0'))
         self.model.add(Dropout(0.3))
         self.model.add(ELU())
         self.model.add(Dense(100,name='fc1'))
@@ -108,15 +105,12 @@ class qModelTrainer:
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
-        self.model.add(Activation('tanh'))
-
-
 
         # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
         # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
         self.model.compile(loss='mse', optimizer='adam', metrics=['accuracy']) #use the default learning rate to follow drive.py
-
+        self.model.summary() 
 
         print('cnn0: ', self.model.get_layer(name="cnn0").output_shape)
         print('cnn1: ', self.model.get_layer(name="cnn1").output_shape)
@@ -201,7 +195,24 @@ class qModelTrainer:
 
 
 def getArgs():
-    parser = argparse.ArgumentParser(description='Steering angle model trainer')
+    parser = argparse.ArgumentParser(dtion='Steering angle model trainer')
+    parser.add_argument('--epoch', type=int, default=5, help='Number of epochs.')
+    parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
+
+    args = parser.parse_args()
+
+    return args
+
+def main():
+    import time
+
+    time_start = time.time()
+
+    args = getArgs()
+
+    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
+    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
+escription='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=5, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
 
