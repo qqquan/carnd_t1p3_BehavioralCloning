@@ -11,3 +11,4 @@ backups
 checkpoint
 checkpoints
 *.pyc
+.fuse_hidden*
