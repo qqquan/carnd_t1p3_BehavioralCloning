@@ -4,6 +4,7 @@ from util_qDatasetManager import qDatasetManager
 from keras.models import Sequential
 from keras.layers import Input, Dense, Activation, Flatten, Dropout, ELU, ActivityRegularization
 from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
 import keras
 from time import strftime
 from datetime import timedelta, datetime
@@ -57,19 +58,12 @@ class qModelTrainer:
                        )
 
         self.model.add(ELU())
-   
-        self.model.add(Dropout(0.3))
+        self.model.add(BatchNormalization())
 
 
-
-        self.model.add(Convolution2D(    nb_filter= 36, 
-                                         nb_row=5,
-                                         nb_col=5, 
-                                         border_mode='valid',
-                                         name='cnn1',
-                                        )
-                          )
+        self.model.add(Convolution2D(36, 5,5,name='cnn1'))
         self.model.add(ELU())
+        self.model.add(BatchNormalization())
 
 
 
@@ -82,19 +76,20 @@ class qModelTrainer:
                                         )
                           )
         self.model.add(ELU())
+        self.model.add(BatchNormalization())
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3'))
         self.model.add(ELU())
+        self.model.add(BatchNormalization())
 
     
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
         self.model.add(ELU())
-
-        self.model.add(ActivityRegularization())
+        self.model.add(BatchNormalization())
 
         #FC0
         self.model.add(Flatten(name='fc0_flatten'))
-        self.model.add(Dropout(0.3))
+        self.model.add(Dropout(0.5))
         self.model.add(ELU())
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
