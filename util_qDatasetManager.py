@@ -298,7 +298,9 @@ def main():
 
     TST_BatchSize = 2
     TST_SampleSize = 10 
-    ls_records = [  'recordings/rec5_udacity/data/driving_log.csv',
+    ls_records = [  
+                    'recordings/rec9_udacity_1image/driving_log.csv',
+                    'recordings/rec5_udacity/data/driving_log.csv',
                    # 'recordings/rec0/driving_log.csv',
                  ]
     dataset_mgr = qDatasetManager(ls_records, debug_size=TST_SampleSize)
@@ -308,7 +310,7 @@ def main():
 
     np_img_c, np_img_l, np_img_r = dataset_mgr.getImg()
 
-    img_idx = 2
+    img_idx = 0
 
     cv2.imshow('center image',np_img_c[img_idx])
     cv2.waitKey(0)

@@ -29,10 +29,11 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
+                            'recordings/rec9_udacity_1image/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec4_recovery/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            'recordings/rec5_udacity/data/driving_log.csv',
+                            # 'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
                           
         # self.DatasetMgr = qDatasetManager(ls_records, debug_size=3)
@@ -78,6 +79,7 @@ class qModelTrainer:
         self.model.add(ELU())
         self.model.add(BatchNormalization())
 
+        self.model.add(Dropout(0.5))
         self.model.add(Convolution2D(64, 3,3,name='cnn3'))
         self.model.add(ELU())
         self.model.add(BatchNormalization())
@@ -89,8 +91,6 @@ class qModelTrainer:
 
         #FC0
         self.model.add(Flatten(name='fc0_flatten'))
-        self.model.add(Dropout(0.5))
-        self.model.add(ELU())
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
         self.model.add(Dense(50,name='fc2'))
@@ -168,7 +168,7 @@ class qModelTrainer:
             json_file.write(model_json)
         # serialize weights to HDF5
         self.model.save_weights(file_loc+".h5")
-        print("Saved model to disk")
+        print("Saved model to disk", file_name)
 
     def reloadModel(self, model_file_name):
         from keras.models import model_from_json
@@ -183,15 +183,24 @@ class qModelTrainer:
 
         self.DatasetMgr.loadDataToMemory()
 
-        np_images = self.DatasetMgr.getImg()
+        np_img_c, np_img_l, np_img_r = self.DatasetMgr.getImg() #todo: fix tuple return
 
+        np_images = np_img_c
         steering_angle = float(self.model.predict(np_images, batch_size=1))
-        print('Angle Prediction: ' , steering_angle)
+        print('Angle Prediction(center): ' , steering_angle)
+
+        np_images = np_img_l
+        steering_angle = float(self.model.predict(np_images, batch_size=1))
+        print('Angle Prediction(left): ' , steering_angle)
+
+        np_images = np_img_r
+        steering_angle = float(self.model.predict(np_images, batch_size=1))
+        print('Angle Prediction(right): ' , steering_angle)        
 
 
 def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
-    parser.add_argument('--epoch', type=int, default=5, help='Number of epochs.')
+    parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
 
     args = parser.parse_args()
@@ -205,16 +214,22 @@ def main():
 
     args = getArgs()
 
-    racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)
-    # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
+    if args.epoch == None:
+        print('debuggggg')
+        racer_trainer = qModelTrainer(enable_incremental_learning=False )
+        # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
-    
+        racer_trainer.trainModel(5)
 
-    if 'per_epoch' in args.cfg:
-        racer_trainer.trainModel_SavePerEpoch(args.epoch)
-    else:        
-        racer_trainer.trainModel(args.epoch)
-        racer_trainer.saveModel()
+        racer_trainer.debugModel()
+
+    else:
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)    
+
+        if 'per_epoch' in args.cfg:
+            racer_trainer.trainModel_SavePerEpoch(args.epoch)
+        else:        
+            racer_trainer.saveModel()
 
     # racer_trainer.debugModel()
 
