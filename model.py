@@ -29,11 +29,11 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec9_udacity_1image/driving_log.csv',
+                            # 'recordings/rec9_udacity_1image/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec4_recovery/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            # 'recordings/rec5_udacity/data/driving_log.csv',
+                            'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
                           
         # self.DatasetMgr = qDatasetManager(ls_records, debug_size=3)
@@ -80,7 +80,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
         self.model.add(Dropout(0.5))
-        
+
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3'))
         self.model.add(ELU())
@@ -193,15 +193,16 @@ class qModelTrainer:
 
         np_img_c, np_img_l, np_img_r = self.DatasetMgr.getImg() #todo: fix tuple return
 
-        np_images = np_img_c
+        print('np_img_c shape: ', np_img_c.shape)
+        np_images = np_img_c[None,0,:] # maintain the required dimension as model input
         steering_angle = float(self.model.predict(np_images, batch_size=1))
         print('Angle Prediction(center): ' , steering_angle)
 
-        np_images = np_img_l
+        np_images = np_img_l[None,0,:]
         steering_angle = float(self.model.predict(np_images, batch_size=1))
         print('Angle Prediction(left): ' , steering_angle)
 
-        np_images = np_img_r
+        np_images = np_img_r[None,0,:]
         steering_angle = float(self.model.predict(np_images, batch_size=1))
         print('Angle Prediction(right): ' , steering_angle)        
 
@@ -227,13 +228,13 @@ def main():
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3 )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
-        epochs = 100
+        epochs = 5
         print('Expected Steering Angle: \n', racer_trainer.DatasetMgr.getY())
 
         for epo in range(epochs):
             generator_train = racer_trainer.DatasetMgr.runBatchGenerator
             num_samples = racer_trainer.DatasetMgr.getInputNum()
-            racer_trainer.model.fit_generator(generator_train(batch_size=3), num_samples, 1 )
+            racer_trainer.model.fit_generator(generator_train(batch_size=1), num_samples, 1 )
 
             print('Epoch: ', epo+1)
             racer_trainer.debugModel()
