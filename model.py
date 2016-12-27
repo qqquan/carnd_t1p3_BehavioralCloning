@@ -50,24 +50,25 @@ class qModelTrainer:
 
     def buildModel(self):
 
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(nb_filter= 24, 
                                      nb_row=5,
                                      nb_col=5, 
                                      name='cnn0',
-                                     input_shape = self.InputShape
+                                     
                                     )
                        )
 
         self.model.add(ELU())
+
+
         self.model.add(BatchNormalization())
-
-
         self.model.add(Convolution2D(36, 5,5,name='cnn1'))
         self.model.add(ELU())
+
+
+
         self.model.add(BatchNormalization())
-
-
-
         self.model.add(Convolution2D(    nb_filter= 48, 
                                          nb_row=5,
                                          nb_col=5, 
@@ -77,24 +78,31 @@ class qModelTrainer:
                                         )
                           )
         self.model.add(ELU())
-        self.model.add(BatchNormalization())
 
         self.model.add(Dropout(0.5))
+        
+        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3'))
         self.model.add(ELU())
-        self.model.add(BatchNormalization())
 
     
+        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
         self.model.add(ELU())
-        self.model.add(BatchNormalization())
 
         #FC0
+        self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
+        
+        self.model.add(BatchNormalization())
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
+
+        self.model.add(BatchNormalization())
         self.model.add(Dense(50,name='fc2'))
         self.model.add(ELU())
+
+        self.model.add(BatchNormalization())
         self.model.add(Dense(10,name='fc3'))
         self.model.add(ELU())
 
@@ -216,12 +224,19 @@ def main():
 
     if args.epoch == None:
         print('debuggggg')
-        racer_trainer = qModelTrainer(enable_incremental_learning=False )
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3 )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
-        racer_trainer.trainModel(5)
+        epochs = 100
+        print('Expected Steering Angle: \n', racer_trainer.DatasetMgr.getY())
 
-        racer_trainer.debugModel()
+        for epo in range(epochs):
+            generator_train = racer_trainer.DatasetMgr.runBatchGenerator
+            num_samples = racer_trainer.DatasetMgr.getInputNum()
+            racer_trainer.model.fit_generator(generator_train(batch_size=3), num_samples, 1 )
+
+            print('Epoch: ', epo+1)
+            racer_trainer.debugModel()
 
     else:
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)    
@@ -238,3 +253,9 @@ def main():
     print("Time usage: " + str(timedelta(seconds=int( time_end - time_start))))
     
 if __name__ == "__main__": main()
+
+
+# self.np_img_loc_X_Train:  ['recordings/rec9_udacity_1image/IMG//center_2016_12_01_13_40_46_798.jpg'
+#  'recordings/rec9_udacity_1image/IMG//left_2016_12_01_13_40_46_798.jpg'
+#  'recordings/rec9_udacity_1image/IMG//right_2016_12_01_13_40_46_798.jpg']
+# self.np_angle_y_Train:  [-0.3825653 -0.3425653 -0.4225653]

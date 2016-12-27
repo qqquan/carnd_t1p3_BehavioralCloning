@@ -118,7 +118,14 @@ class qDatasetManager:
 
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
 
-        (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
+        if debug_size == None:
+            (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
+        else:
+            #debug
+            self.np_img_loc_X_Train =   self.np_img_loc_augm
+            self.np_angle_y_Train = self.np_angle_augm 
+            self.np_img_loc_X_Vali = np.array([])
+            self.np_angle_y_Vali = np.array([])
 
 
         self.np_images_center = np.array([]) 
@@ -169,10 +176,10 @@ class qDatasetManager:
                 if (start_idx+batch_size) < num_total:
                     end_idx = start_idx+batch_size
 
-                else:
-                    assert(num_total > batch_size)
+                elif (num_total > batch_size):
                     end_idx = num_total # take whatever left, although having fewer than batch_size
-
+                elif (num_total <= batch_size):
+                    end_idx = batch_size
 
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
 
