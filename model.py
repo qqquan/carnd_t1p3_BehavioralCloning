@@ -36,6 +36,7 @@ class qModelTrainer:
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
                           
+        self.path_model_checkpoints = 'checkpoints'
         # self.DatasetMgr = qDatasetManager(ls_records, debug_size=3)
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size)
 
@@ -46,6 +47,8 @@ class qModelTrainer:
         else:
             self.model = Sequential()
             self.buildModel()
+
+        self.clearSavedModels()
 
 
     def buildModel(self):
@@ -135,7 +138,7 @@ class qModelTrainer:
         if num_samples< 64: # debugging
             history = self.model.fit_generator(generator_train(batch_size=1), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
         else:
-            history = self.model.fit_generator(generator_train(batch_size=64), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+            history = self.model.fit_generator(generator_train(batch_size=128), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
     def trainModel_SavePerEpoch(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
@@ -148,7 +151,7 @@ class qModelTrainer:
 
                 history = self.model.fit_generator(generator_train(batch_size=1), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
             else:
-                history = self.model.fit_generator(generator_train(batch_size=64), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+                history = self.model.fit_generator(generator_train(batch_size=128), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
             print("Epoch: ", i+1)    
             self.saveModel()
@@ -156,7 +159,7 @@ class qModelTrainer:
 
 
     def saveModel(self, str_model_name='model'):
-        relative_path = 'checkpoints'
+        relative_path = self.path_model_checkpoints 
 
         if not os.path.exists(relative_path):
             os.makedirs(relative_path)
@@ -207,6 +210,17 @@ class qModelTrainer:
         steering_angle = float(self.model.predict(np_images, batch_size=1))
         print('Angle Prediction(right): ' , steering_angle)        
 
+    def clearSavedModels(self):
+        import glob, os
+        relative_path = self.path_model_checkpoints 
+
+        if not os.path.exists(relative_path):
+            os.makedirs(relative_path)
+
+        file_pattern = os.path.join(relative_path, "*.*")
+        filelist = glob.glob(file_pattern)
+        for f in filelist:
+            os.remove(f)
 
 def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
@@ -225,7 +239,6 @@ def main():
     args = getArgs()
 
     if args.epoch == None:
-        print('debuggggg')
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3 )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
