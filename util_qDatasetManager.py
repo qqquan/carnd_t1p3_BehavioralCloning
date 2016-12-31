@@ -2,16 +2,16 @@ import pandas as pd
 import numpy as np
 import cv2
 
-IMG_SCALE = 0.2 
+IMG_SCALE = 0.3
 
 def normalizeImg(np_images):
 
     return (np_images-128)/255
 
-def cropRoadImage(np_img):
+def cropRoadImage(np_img, cutoff_ratio = 0.5):
 
     h = np_img.shape[0]
-    h_new_begin = int(h*0.3)
+    h_new_begin = int(h*cutoff_ratio)
 
     return np_img[h_new_begin:h,:, :]
 
