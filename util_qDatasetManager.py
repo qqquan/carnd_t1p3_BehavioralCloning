@@ -265,7 +265,7 @@ class qDatasetManager:
     def getRightImgLocList(self):
         return self.np_sim_sheet[:, qDatasetManager.IDX_COL_RIGHT_IMG]
 
-                        
+    #return numpy array of [.., angle]                    
     def getY(self):
         angle_list = self.np_angle_y_Train
         ls_angle_dim_correction = np.expand_dims(angle_list, axis=1)

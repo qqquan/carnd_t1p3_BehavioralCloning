@@ -72,23 +72,23 @@ class qModelTrainer:
         self.model.add(Dropout(0.3))
 
 
-        self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(    nb_filter= 48, 
-                                         nb_row=5,
-                                         nb_col=5, 
-                                         name='cnn2',
-                                         border_mode='valid',
+        # self.model.add(BatchNormalization())
+        # self.model.add(Convolution2D(    nb_filter= 48, 
+        #                                  nb_row=5,
+        #                                  nb_col=5, 
+        #                                  name='cnn2',
+        #                                  border_mode='valid',
 
-                                        )
-                          )
-        self.model.add(ELU())
+        #                                 )
+        #                   )
+        # self.model.add(ELU())
 
 
-        self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn3'))
-        self.model.add(ELU())
+        # self.model.add(BatchNormalization())
+        # self.model.add(Convolution2D(64, 3,3,name='cnn3'))
+        # self.model.add(ELU())
 
-        self.model.add(Dropout(0.5))
+        # self.model.add(Dropout(0.5))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4'))
@@ -102,13 +102,13 @@ class qModelTrainer:
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
 
-        self.model.add(BatchNormalization())
-        self.model.add(Dense(50,name='fc2'))
-        self.model.add(ELU())
+        # self.model.add(BatchNormalization())
+        # self.model.add(Dense(50,name='fc2'))
+        # self.model.add(ELU())
 
-        self.model.add(BatchNormalization())
-        self.model.add(Dense(10,name='fc3'))
-        self.model.add(ELU())
+        # self.model.add(BatchNormalization())
+        # self.model.add(Dense(10,name='fc3'))
+        # self.model.add(ELU())
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
@@ -119,11 +119,6 @@ class qModelTrainer:
         self.model.compile(loss='mse', optimizer='adam', metrics=['accuracy']) #use the default learning rate to follow drive.py
         self.model.summary() 
 
-        print('cnn0: ', self.model.get_layer(name="cnn0").output_shape)
-        print('cnn1: ', self.model.get_layer(name="cnn1").output_shape)
-        print('cnn2: ', self.model.get_layer(name="cnn2").output_shape)
-        print('cnn3: ', self.model.get_layer(name="cnn3").output_shape)
-        print('cnn4: ', self.model.get_layer(name="cnn4").output_shape)
 
     def trainModel(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
