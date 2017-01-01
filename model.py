@@ -98,17 +98,17 @@ class qModelTrainer:
         self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
-        self.model.add(BatchNormalization())
-        self.model.add(Dense(100,name='fc1'))
-        self.model.add(ELU())
+        # self.model.add(BatchNormalization())
+        # self.model.add(Dense(100,name='fc1'))
+        # self.model.add(ELU())
 
         # self.model.add(BatchNormalization())
         # self.model.add(Dense(50,name='fc2'))
         # self.model.add(ELU())
 
-        # self.model.add(BatchNormalization())
-        # self.model.add(Dense(10,name='fc3'))
-        # self.model.add(ELU())
+        self.model.add(BatchNormalization())
+        self.model.add(Dense(20,name='fc3'))
+        self.model.add(ELU())
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
