@@ -72,42 +72,42 @@ class qModelTrainer:
         self.model.add(Dropout(0.3))
 
 
-        # self.model.add(BatchNormalization())
-        # self.model.add(Convolution2D(    nb_filter= 48, 
-        #                                  nb_row=5,
-        #                                  nb_col=5, 
-        #                                  name='cnn2',
-        #                                  border_mode='valid',
+        self.model.add(BatchNormalization())
+        self.model.add(Convolution2D(    nb_filter= 48, 
+                                         nb_row=5,
+                                         nb_col=5, 
+                                         name='cnn2',
+                                         border_mode='valid',
 
-        #                                 )
-        #                   )
-        # self.model.add(ELU())
+                                        )
+                          )
+        self.model.add(ELU())
 
 
-        # self.model.add(BatchNormalization())
-        # self.model.add(Convolution2D(64, 3,3,name='cnn3'))
-        # self.model.add(ELU())
+        self.model.add(BatchNormalization())
+        self.model.add(Convolution2D(64, 3,3,name='cnn3'))
+        self.model.add(ELU())
 
-        # self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.5))
     
-        # self.model.add(BatchNormalization())
-        # self.model.add(Convolution2D(64, 3,3,name='cnn4'))
-        # self.model.add(ELU())
+        self.model.add(BatchNormalization())
+        self.model.add(Convolution2D(64, 3,3,name='cnn4'))
+        self.model.add(ELU())
 
         #FC0
         # self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
-        # self.model.add(BatchNormalization())
-        # self.model.add(Dense(100,name='fc1'))
-        # self.model.add(ELU())
-
-        # self.model.add(BatchNormalization())
-        # self.model.add(Dense(50,name='fc2'))
-        # self.model.add(ELU())
+        self.model.add(BatchNormalization())
+        self.model.add(Dense(100,name='fc1'))
+        self.model.add(ELU())
 
         self.model.add(BatchNormalization())
-        self.model.add(Dense(20,name='fc3'))
+        self.model.add(Dense(50,name='fc2'))
+        self.model.add(ELU())
+
+        self.model.add(BatchNormalization())
+        self.model.add(Dense(10,name='fc3'))
         self.model.add(ELU())
 
         #FC7
