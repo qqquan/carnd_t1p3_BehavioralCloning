@@ -54,44 +54,31 @@ class qModelTrainer:
     def buildModel(self):
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(nb_filter= 24, 
-                                     nb_row=5,
-                                     nb_col=5, 
-                                     name='cnn0',
-                                     border_mode='same', 
-                                    )
-                       )
+        self.model.add(Convolution2D(24, 5, 5, name='cnn0',border_mode='valid',))
 
         self.model.add(ELU())
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(36, 5,5,name='cnn1', border_mode='same'))
+        self.model.add(Convolution2D(36, 5,5,name='cnn1', border_mode='valid'))
         self.model.add(ELU())
 
         self.model.add(Dropout(0.5))
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(    nb_filter= 48, 
-                                         nb_row=5,
-                                         nb_col=5, 
-                                         name='cnn2',
-                                         border_mode='same',
-
-                                        )
-                          )
+        self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid', ) )
         self.model.add(ELU())
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='same',))
+        self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid',))
         self.model.add(ELU())
 
         self.model.add(Dropout(0.5))
     
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='same',))
+        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid',))
         self.model.add(ELU())
 
         #FC0
