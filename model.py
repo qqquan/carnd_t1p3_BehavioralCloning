@@ -90,12 +90,12 @@ class qModelTrainer:
 
         # self.model.add(Dropout(0.5))
     
-        self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn4'))
-        self.model.add(ELU())
+        # self.model.add(BatchNormalization())
+        # self.model.add(Convolution2D(64, 3,3,name='cnn4'))
+        # self.model.add(ELU())
 
         #FC0
-        self.model.add(BatchNormalization())
+        # self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
         # self.model.add(BatchNormalization())
