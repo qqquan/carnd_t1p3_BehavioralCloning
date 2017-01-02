@@ -46,12 +46,12 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
 
-    def buildModel(self):
+    def buildModel_nvidia(self):
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(24, 5, 5, name='cnn0',border_mode='valid',))
@@ -106,6 +106,25 @@ class qModelTrainer:
         self.model.compile(loss='mse', optimizer='adam', metrics=['accuracy']) #use the default learning rate to follow drive.py
         self.model.summary() 
 
+    def buildModel_commaai(self):
+        
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
+
+        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
+        self.model.add(ELU())
+        self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(ELU())
+        self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(Flatten())
+        self.model.add(Dropout(.2))
+        self.model.add(ELU())
+        self.model.add(Dense(512))
+        self.model.add(Dropout(.5))
+        self.model.add(ELU())
+        self.model.add(Dense(1))
+
+        self.model.compile(optimizer="adam", loss="mse")
+        self.model.summary() 
 
     def trainModel(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
