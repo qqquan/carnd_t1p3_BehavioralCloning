@@ -107,17 +107,19 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_commaai(self):
-        
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
 
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
         self.model.add(ELU())
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(ELU())
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
         self.model.add(Dropout(.2))
         self.model.add(ELU())
+        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Dense(512))
         self.model.add(Dropout(.5))
         self.model.add(ELU())
