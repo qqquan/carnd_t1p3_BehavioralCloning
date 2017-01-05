@@ -6,8 +6,9 @@ IMG_SCALE = 1
 
 def normalizeImg(np_images):
 
-    return (np_images-128)/255
+    return (np_images-128.0)/255.0
 
+# cut off upper part of image
 def cropRoadImage(np_img, cutoff_ratio = 0.4):
 
     h = np_img.shape[0]
@@ -380,7 +381,7 @@ def main():
 
 
     print('val_gen', val_gen)
-
+    print('np_img_c[img_idx] max:' , np.max(np_img_c[img_idx]))
 
     next(validation_data)
 

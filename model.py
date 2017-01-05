@@ -79,7 +79,7 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
 
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid',  init='normal'))
