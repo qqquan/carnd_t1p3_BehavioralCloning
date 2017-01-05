@@ -8,7 +8,7 @@ def normalizeImg(np_images):
 
     return (np_images-128)/255
 
-def cropRoadImage(np_img, cutoff_ratio = 0.5):
+def cropRoadImage(np_img, cutoff_ratio = 0.4):
 
     h = np_img.shape[0]
     h_new_begin = int(h*cutoff_ratio)
