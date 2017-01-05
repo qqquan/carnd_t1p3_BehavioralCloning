@@ -60,7 +60,7 @@ class qModelTrainer:
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid'))
+        self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid',  init='normal'))
         self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -68,43 +68,43 @@ class qModelTrainer:
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid', ) )
+        self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid',  init='normal' ) )
         self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid',))
+        self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid',  init='normal'))
         self.model.add(ELU())
 
         self.model.add(Dropout(0.5))
     
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid',))
+        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid',  init='normal'))
         self.model.add(ELU())
 
         #FC0
         # self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
-        self.model.add(Dense(100,name='fc1'))
+        self.model.add(Dense(100,name='fc1',  init='normal'))
         self.model.add(ELU())
 
         self.model.add(BatchNormalization())
-        self.model.add(Dense(50,name='fc2'))
+        self.model.add(Dense(50,name='fc2',  init='normal'))
         self.model.add(ELU())
 
         self.model.add(BatchNormalization())
-        self.model.add(Dense(10,name='fc3'))
+        self.model.add(Dense(10,name='fc3',  init='normal'))
         self.model.add(ELU())
 
         #FC7
-        self.model.add(Dense(1, name='fc7'))
+        self.model.add(Dense(1, name='fc7',  init='normal'))
 
         # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
         # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
-        self.model.compile(loss='mse', optimizer='adam', metrics=['accuracy']) #use the default learning rate to follow drive.py
+        self.model.compile(loss='mse', optimizer='adam') #use the default learning rate to follow drive.py
         self.model.summary() 
 
     def buildModel_commaai(self):
