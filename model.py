@@ -46,7 +46,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_nvidia()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
@@ -56,13 +56,13 @@ class qModelTrainer:
         self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3),input_shape = self.InputShape, name='cnn0',border_mode='valid',))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
 
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         self.model.add(Dropout(0.5))
@@ -70,20 +70,20 @@ class qModelTrainer:
 
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid',  init='normal' ) )
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
 
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         self.model.add(Dropout(0.3))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         #FC0
@@ -91,17 +91,17 @@ class qModelTrainer:
         self.model.add(Flatten(name='fc0_flatten'))
         
         self.model.add(Dense(100,name='fc1',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         self.model.add(BatchNormalization())
         self.model.add(Dense(50,name='fc2',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         self.model.add(BatchNormalization())
         self.model.add(Dense(10,name='fc3',  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
 
         #FC7
@@ -110,32 +110,37 @@ class qModelTrainer:
         # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
         # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
-        self.model.compile(loss='mse', optimizer='adam') #use the default learning rate to follow drive.py
+
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
+
+        self.model.compile(loss='mse', optimizer=self.Optimizer) #use the default learning rate to follow drive.py
         self.model.summary() 
 
     def buildModel_commaai(self):
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), border_mode="same",  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), border_mode="same"))
+        self.model.add(ELU())
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same",  init='normal'))
-        self.model.add(Activation('relu'))
+        self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same"))
+        self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same",  init='normal'))
+        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
 
         self.model.add(Flatten())
         self.model.add(Dropout(.2))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Dense(512,  init='normal'))
+        self.model.add(Dense(512))
         self.model.add(Dropout(.5))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(Dense(1))
 
-        self.model.compile(optimizer="adam", loss="mse")
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
+
+        self.model.compile(optimizer=self.Optimizer, loss="mse")
         self.model.summary() 
 
     def trainModel(self, epoch):
