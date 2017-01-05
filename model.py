@@ -46,7 +46,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_commaai()
+            self.buildModel_nvidia()
 
         self.clearSavedModels()
 
@@ -54,14 +54,15 @@ class qModelTrainer:
     def buildModel_nvidia(self):
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(24, 5, 5, name='cnn0',border_mode='valid',))
+        self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3), name='cnn0',border_mode='valid',))
 
         self.model.add(ELU())
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(36, 5,5,name='cnn1', border_mode='valid'))
+        self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid'))
         self.model.add(ELU())
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(Dropout(0.5))
 
