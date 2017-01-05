@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import cv2
 
-IMG_SCALE = 0.5
+IMG_SCALE = 1 
 
 def normalizeImg(np_images):
 

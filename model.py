@@ -85,7 +85,6 @@ class qModelTrainer:
         # self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
-        self.model.add(BatchNormalization())
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
 
@@ -109,20 +108,23 @@ class qModelTrainer:
     def buildModel_commaai(self):
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
-        self.model.add(ELU())
+        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), border_mode="same",  init='normal'))
+        self.model.add(Activation('relu'))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
-        self.model.add(ELU())
+        self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same",  init='normal'))
+        self.model.add(Activation('relu'))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same",  init='normal'))
+
         self.model.add(Flatten())
         self.model.add(Dropout(.2))
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
+
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Dense(512))
+        self.model.add(Dense(512,  init='normal'))
         self.model.add(Dropout(.5))
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         self.model.add(Dense(1))
 
         self.model.compile(optimizer="adam", loss="mse")
