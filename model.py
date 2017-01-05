@@ -68,7 +68,7 @@ class qModelTrainer:
 
 
         self.model.add(BatchNormalization())
-        self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid', ) )
+        self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2), name='cnn2', border_mode='valid', ) )
         self.model.add(ELU())
 
 
