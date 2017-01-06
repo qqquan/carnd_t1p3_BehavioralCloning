@@ -35,15 +35,25 @@ def prepAngle(np_angles):
 
     return np_angle_filtered
 
-def loadImgToNumpy(ls_img, img_scale):
-    ls_image_data = []
+def loadImgToNumpy(ls_img, img_scale, enable_aug_flip = False):
+    ls_image = []
+    ls_image_flip = []
     for file_loc in ls_img:
         img = cv2.imread(file_loc)
         img_prep = prepImg(img, img_scale)
         if img_prep is not None:
-                ls_image_data.append(img_prep)
+            ls_image.append(img_prep)
+            if enable_aug_flip == True:
+                img_flip = np.fliplr(img_prep)
+                ls_image_flip.append(img_flip)
 
-    return np.array(ls_image_data)
+
+    if enable_aug_flip == True:
+        return np.array(ls_image), np.array(ls_image_flip)
+
+
+    else:
+        return np.array(ls_image)
 
 
 def getCrossValiSets(X, y, training_len=0.75):
@@ -186,11 +196,14 @@ class qDatasetManager:
 
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
 
-                np_x = loadImgToNumpy(ls_x_loc, self.img_scale)
+                np_x, np_x_flip = loadImgToNumpy(ls_x_loc, self.img_scale, enable_aug_flip=True)
 
                 np_y = np_yy[start_idx:end_idx]
+                np_y_flip = np_y * (-1.0)
 
-                yield (np_x, np_y)
+                np_x_aug = np.vstack((np_x, np_x_flip))
+                np_y_aug = np.vstack((np_y, np_y_flip))
+                yield (np_x_aug, np_y_aug)
 
     def runValiBatchGenerator(self, batch_size=int(64*0.25)): #TODO: currently 25% of dataset is allocated for validation. make it configurable.
 
