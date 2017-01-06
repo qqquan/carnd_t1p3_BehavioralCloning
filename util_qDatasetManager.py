@@ -162,7 +162,7 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_offset = 0.06 # 2 degree:  0.04 - 1 degree; 
+        np_angle_offset = 0.04 # 2 degree:  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset
 
@@ -391,6 +391,17 @@ def main():
         # avoid any explicit version checks
     val_gen = (hasattr(validation_data, 'next') or
                hasattr(validation_data, '__next__'))
+
+    batch_size = 10
+    training_data_gen = dataset_mgr.runBatchGenerator(batch_size)
+    np_x, np_y = next(training_data_gen)
+    idx_img = 2
+    cv2.imshow(' image before flip ',np_x[idx_img])
+    cv2.waitKey(0)
+    cv2.imshow(' image after flip ',np_x[idx_img + batch_size])
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 
 
     print('val_gen', val_gen)
