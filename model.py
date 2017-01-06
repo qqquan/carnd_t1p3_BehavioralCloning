@@ -138,7 +138,7 @@ class qModelTrainer:
         self.model.add(Dense(1))
 
 
-        self.model.compile(loss='mse', optimizer='adam') 
+        self.model.compile(loss='mse', optimizegetInputNumr='adam') 
         self.model.summary() 
 
     def trainModel(self, epoch):
@@ -146,6 +146,8 @@ class qModelTrainer:
         generator_vali = self.DatasetMgr.runValiBatchGenerator
 
         num_samples = self.DatasetMgr.getInputNum()
+        num_samples *= 2 #enabling image flip doubles the size 
+
         num_vali_samples = len(self.DatasetMgr.getValidationY())
         # if generator == None:
         #     history = self.model.fit(self.X_Train , self.y_Train , nb_epoch=epoch, batch_size=64,  validation_split=0.2 ,shuffle=True, verbose = 2)
@@ -160,6 +162,9 @@ class qModelTrainer:
         generator_train = self.DatasetMgr.runBatchGenerator
         generator_vali = self.DatasetMgr.runValiBatchGenerator
         num_samples = self.DatasetMgr.getInputNum()
+
+        num_samples *= 2 #enabling image flip doubles the size 
+
         num_vali_samples = len(self.DatasetMgr.getValidationY())
 
         for i in range(epoch):
