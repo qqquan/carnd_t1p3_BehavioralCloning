@@ -19,7 +19,7 @@ class qModelTrainer:
             # new learning materials
 
             ls_records = [  
-                            # 'recordings/rec7_1stCurve/driving_log.csv',
+                            'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec8_1stCurve_LeftRecov/driving_log.csv',
                             # 'recordings/rec6_2ndCurve/driving_log.csv',
                             # 'recordings/rec4_recovery/driving_log.csv',
@@ -29,7 +29,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            # 'recordings/rec9_udacity_1image/driving_log.csv',
+                            'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec4_recovery/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
@@ -111,9 +111,8 @@ class qModelTrainer:
 
         # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
 
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
 
-        self.model.compile(loss='mse', optimizer=self.Optimizer) #use the default learning rate to follow drive.py
+        self.model.compile(loss='mse', optimizer='adam') 
         self.model.summary() 
 
     def buildModel_commaai(self):
@@ -138,9 +137,8 @@ class qModelTrainer:
         self.model.add(ELU())
         self.model.add(Dense(1))
 
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
 
-        self.model.compile(optimizer=self.Optimizer, loss="mse")
+        self.model.compile(loss='mse', optimizer='adam') 
         self.model.summary() 
 
     def trainModel(self, epoch):
@@ -156,7 +154,7 @@ class qModelTrainer:
         if num_samples< 64: # debugging
             history = self.model.fit_generator(generator_train(batch_size=1), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
         else:
-            history = self.model.fit_generator(generator_train(batch_size=128), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+            history = self.model.fit_generator(generator_train(batch_size=64), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
     def trainModel_SavePerEpoch(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
@@ -169,7 +167,7 @@ class qModelTrainer:
 
                 history = self.model.fit_generator(generator_train(batch_size=1), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
             else:
-                history = self.model.fit_generator(generator_train(batch_size=128), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+                history = self.model.fit_generator(generator_train(batch_size=64), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
             print("Epoch: ", i+1)    
             self.saveModel()

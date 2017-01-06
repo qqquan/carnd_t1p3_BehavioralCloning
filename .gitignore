@@ -8,7 +8,7 @@ recordings
 __pycache__
 *.zip
 backups
-checkpoint
+checkpoint*
 checkpoints
 *.pyc
 .fuse_hidden*
