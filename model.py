@@ -120,10 +120,10 @@ class qModelTrainer:
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), border_mode="same"))
         self.model.add(ELU())
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same"))
         self.model.add(ELU())
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
 
