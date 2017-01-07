@@ -53,9 +53,8 @@ class qModelTrainer:
 
     def buildModel_nvidia(self):
 
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
 
-        self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3), name='cnn0',border_mode='valid',))
+        self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(ELU())
