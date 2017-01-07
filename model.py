@@ -108,12 +108,12 @@ class qModelTrainer:
         #FC7
         self.model.add(Dense(1, name='fc7'))
 
-        # self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-        # self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
+        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
 
 
-        self.model.compile(loss='mse', optimizer='adam') 
+        # self.model.compile(loss='mse', optimizer='adam') 
         self.model.summary() 
 
     def buildModel_commaai(self):
