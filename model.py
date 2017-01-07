@@ -29,7 +29,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec11_backwardTrack/driving_log.csv',
+                            # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
@@ -38,7 +38,7 @@ class qModelTrainer:
                           
         self.path_model_checkpoints = 'checkpoints'
         # self.DatasetMgr = qDatasetManager(ls_records, debug_size=3)
-        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = False)
+        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = True)
 
         self.InputShape = self.DatasetMgr.getInputShape()
 
