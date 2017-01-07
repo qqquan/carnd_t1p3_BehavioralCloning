@@ -66,7 +66,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
-        # self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.5))
 
 
         self.model.add(BatchNormalization())
