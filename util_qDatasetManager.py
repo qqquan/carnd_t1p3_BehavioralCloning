@@ -162,7 +162,7 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_offset = 0.02 # 2 degree:  0.04 - 1 degree; 
+        np_angle_offset = 0.06 + # 1.5 degree:  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset
 

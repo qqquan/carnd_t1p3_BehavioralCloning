@@ -29,7 +29,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec11_backwardTrack/driving_log.csv',
+                            # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
