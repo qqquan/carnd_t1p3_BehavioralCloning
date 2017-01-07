@@ -29,9 +29,9 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
+                            # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
-                            'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
@@ -108,9 +108,9 @@ class qModelTrainer:
         #FC7
         self.model.add(Dense(1, name='fc7'))
 
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
 
-        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['accuracy'])
+        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer)
 
 
         # self.model.compile(loss='mse', optimizer='adam') 
