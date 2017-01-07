@@ -147,7 +147,6 @@ class qModelTrainer:
         generator_vali = self.DatasetMgr.runValiBatchGenerator
 
         num_samples = self.DatasetMgr.getInputNum()
-        num_samples *= 2 #enabling image flip doubles the size 
 
         num_vali_samples = len(self.DatasetMgr.getValidationY())
         # if generator == None:
@@ -163,8 +162,6 @@ class qModelTrainer:
         generator_train = self.DatasetMgr.runBatchGenerator
         generator_vali = self.DatasetMgr.runValiBatchGenerator
         num_samples = self.DatasetMgr.getInputNum()
-
-        num_samples *= 2 #enabling image flip doubles the size 
 
         num_vali_samples = len(self.DatasetMgr.getValidationY())
 

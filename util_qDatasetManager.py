@@ -50,8 +50,6 @@ def loadImgToNumpy(ls_img, img_scale, enable_aug_flip = False):
 
     if enable_aug_flip == True:
         return np.array(ls_image), np.array(ls_image_flip)
-
-
     else:
         return np.array(ls_image)
 
@@ -105,10 +103,10 @@ class qDatasetManager:
     IDX_COL_RIGHT_IMG = 2
     IDX_COL_ANGLE = 3
 
-    def __init__(self, ls_file_loc, img_scale=IMG_SCALE , debug_size = None):
+    def __init__(self, ls_file_loc, img_scale=IMG_SCALE, enable_aug_flip=True, debug_size = None, ):
         
         self.img_scale = img_scale
-
+        self.enable_aug_flip = enable_aug_flip
         
         col_indx = [qDatasetManager.IDX_COL_CENTER_IMG, qDatasetManager.IDX_COL_LEFT_IMG, qDatasetManager.IDX_COL_RIGHT_IMG, qDatasetManager.IDX_COL_ANGLE]
 
@@ -172,12 +170,12 @@ class qDatasetManager:
 
     def runBatchGenerator(self, batch_size=64):
 
-        num_total = self.getInputNum()
 
         np_xx_loc = self.getImgLocArray()
 
 
         np_yy = self.getY() # full reference output
+        num_total = len(np_yy)
 
         batch_start_idx = range(0, num_total, batch_size)
 
@@ -196,14 +194,22 @@ class qDatasetManager:
 
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
 
-                np_x, np_x_flip = loadImgToNumpy(ls_x_loc, self.img_scale, enable_aug_flip=True)
+                if True == self.enable_aug_flip :
+                    np_x, np_x_flip = loadImgToNumpy(ls_x_loc, self.img_scale,  self.enable_aug_flip)
+                else:
+                    np_x = loadImgToNumpy(ls_x_loc, self.img_scale,  self.enable_aug_flip)
+
+
 
                 np_y = np_yy[start_idx:end_idx]
                 np_y_flip = np_y * (-1.0)
 
-                np_x_aug = np.vstack((np_x, np_x_flip))
-                np_y_aug = np.vstack((np_y, np_y_flip))
-                yield (np_x_aug, np_y_aug)
+                if self.enable_aug_flip == True:
+                    np_x = np.vstack((np_x, np_x_flip))
+                    np_y = np.vstack((np_y, np_y_flip))
+
+
+                yield (np_x, np_y)
 
     def runValiBatchGenerator(self, batch_size=int(64*0.25)): #TODO: currently 25% of dataset is allocated for validation. make it configurable.
 
@@ -314,8 +320,14 @@ class qDatasetManager:
         return a_img.shape[1:]     
 
     def getInputNum(self):
-        return len(self.getY())
+        num_raw_input = len(self.getY())
 
+        if self.enable_aug_flip == True:
+            num = 2* num_raw_input  #flipping image doubles the number of images.
+        else:
+            num = num_raw_input
+
+        return num
 
 def main():
 
@@ -366,7 +378,7 @@ def main():
    
     test_count = 0
     for x,y in dataset_mgr.runBatchGenerator(TST_BatchSize):
-        print("batch generator: ", x.shape,y.shape)
+        print("batch generator output - X shape and y shape: ", x.shape,y.shape)
         assert(x.shape[0] == y.shape[0])
         assert (x.shape[0] > 0)
         
