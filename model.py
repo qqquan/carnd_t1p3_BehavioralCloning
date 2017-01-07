@@ -36,11 +36,11 @@ class qModelTrainer:
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
                           
-        self.path_model_checkpoints = 'checkpoints'
-        # self.DatasetMgr = qDatasetManager(ls_records, debug_size=3)
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = True)
 
         self.InputShape = self.DatasetMgr.getInputShape()
+
+        self.path_model_checkpoints = 'checkpoints'
 
         if enable_incremental_learning:
             self.reloadModel('model.json')
@@ -66,7 +66,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
-        self.model.add(Dropout(0.5))
+        # self.model.add(Dropout(0.5))
 
 
         self.model.add(BatchNormalization())
@@ -80,7 +80,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
-        self.model.add(Dropout(0.5))
+        # self.model.add(Dropout(0.5))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
