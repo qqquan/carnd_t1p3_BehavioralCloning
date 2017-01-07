@@ -19,7 +19,7 @@ def cropRoadImage(np_img, cutoff_ratio = 0.4):
 # a_image is a BGR image
 def prepImg(a_image, scale = IMG_SCALE):
 
-    a_image = cv2.cvtColor(a_image, cv2.COLOR_BGR2HSV)
+    a_image = cv2.cvtColor(a_image, cv2.COLOR_BGR2YUV)
 
     a_image = cropRoadImage(a_image)
     img_resi = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
@@ -162,7 +162,7 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_offset = 0.04 # 2 degree:  0.04 - 1 degree; 
+        np_angle_offset = 0.02 # 2 degree:  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset
 
