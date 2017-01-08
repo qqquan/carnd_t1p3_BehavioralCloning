@@ -19,19 +19,19 @@ class qModelTrainer:
             # new learning materials
 
             ls_records = [  
-                            'recordings/rec10_right_turn/driving_log.csv',
+                            'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec8_1stCurve_LeftRecov/driving_log.csv',
                             # 'recordings/rec6_2ndCurve/driving_log.csv',
                             # 'recordings/rec4_recovery/driving_log.csv',
-                            'recordings/rec5_udacity/data/driving_log.csv',
+                            # 'recordings/rec5_udacity/data/driving_log.csv',
                             
 
                          ]  
         else:
              ls_records = [  
                             'recordings/rec13_sideDirt1/driving_log.csv',
-                            'recordings/rec11_backwardTrack/driving_log.csv',
-                            # 'recordings/rec14_backTrack3/driving_log.csv',
+                            # 'recordings/rec11_backwardTrack/driving_log.csv',
+                            'recordings/rec14_backTrack3/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
@@ -120,28 +120,31 @@ class qModelTrainer:
 
     def buildModel_commaai(self):
 
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), border_mode="same"))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), input_shape = self.InputShape, border_mode="same"))
         self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same"))
+
+        self.model.add(Dropout(.5))
+
         self.model.add(ELU())
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
 
         self.model.add(Flatten())
-        self.model.add(Dropout(.2))
         self.model.add(ELU())
 
         self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Dense(512))
-        self.model.add(Dropout(.5))
         self.model.add(ELU())
         self.model.add(Dense(1))
 
 
-        self.model.compile(loss='mse', optimizegetInputNumr='adam') 
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
+
+        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer)
+        
         self.model.summary() 
 
     def trainModel(self, epoch):
@@ -247,7 +250,7 @@ def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
-
+    parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     args = parser.parse_args()
 
     return args
@@ -274,7 +277,12 @@ def main():
             print('Epoch: ', epo+1)
             racer_trainer.debugModel()
 
+    elif args.increm:
+        racer_trainer = qModelTrainer(enable_incremental_learning=True, debug_size = None)    
+        racer_trainer.trainModel_SavePerEpoch(args.epoch)
+
     else:
+        #normal training
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)    
 
         if 'per_epoch' in args.cfg:
