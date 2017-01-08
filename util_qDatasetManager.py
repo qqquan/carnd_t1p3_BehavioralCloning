@@ -324,6 +324,7 @@ class qDatasetManager:
     def getInputNum(self):
         num_raw_input = len(self.getY())
 
+
         if self.enable_aug_flip == True:
             num = 2* num_raw_input  #flipping image doubles the number of images.
         else:

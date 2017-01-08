@@ -13,7 +13,7 @@ import os
 
 class qModelTrainer:
 
-    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None):
+    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True):
 
         if enable_incremental_learning:
             # new learning materials
@@ -38,8 +38,8 @@ class qModelTrainer:
                             # 'recordings/rec2_curve/driving_log.csv',
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
-                          
-        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = True, offset_leftright_img = 0.1)
+
+        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = 0.1)
 
         self.InputShape = self.DatasetMgr.getInputShape()
 
@@ -252,6 +252,7 @@ def getArgs():
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
     parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
+    parser.add_argument("--disable_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     args = parser.parse_args()
 
     return args
@@ -284,11 +285,18 @@ def main():
 
     else:
         #normal training
-        racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = None)    
+        if args.disable_flip:
+            enable_flip = False
+        else:
+            enable_flip = True
+
+
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, enable_aug_flip= enable_flip, debug_size = None)    
 
         if 'per_epoch' in args.cfg:
             racer_trainer.trainModel_SavePerEpoch(args.epoch)
         else:        
+            racer_trainer.trainModel(args.epoch)
             racer_trainer.saveModel()
 
     # racer_trainer.debugModel()
