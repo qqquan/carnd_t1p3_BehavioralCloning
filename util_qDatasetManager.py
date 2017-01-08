@@ -103,10 +103,12 @@ class qDatasetManager:
     IDX_COL_RIGHT_IMG = 2
     IDX_COL_ANGLE = 3
 
-    def __init__(self, ls_file_loc, img_scale=IMG_SCALE, enable_aug_flip=True, debug_size = None, ):
+    # offset_leftright_img: 0.04 - 1 degree; 0.1 - 2.5 degree
+    def __init__(self, ls_file_loc, img_scale=IMG_SCALE, enable_aug_flip=True, offset_leftright_img = 0.1, debug_size = None, ):
         
         self.img_scale = img_scale
         self.enable_aug_flip = enable_aug_flip
+        self.offset_leftright_img = offset_leftright_img
         
         col_indx = [qDatasetManager.IDX_COL_CENTER_IMG, qDatasetManager.IDX_COL_LEFT_IMG, qDatasetManager.IDX_COL_RIGHT_IMG, qDatasetManager.IDX_COL_ANGLE]
 
@@ -160,7 +162,7 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
-        np_angle_offset = 0.1 #  0.04 - 1 degree; 
+        np_angle_offset = self.offset_leftright_img  #  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset
 
