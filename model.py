@@ -29,7 +29,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec15_MentorSD/driving_log.csv',
+                            # 'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
@@ -63,28 +63,22 @@ class qModelTrainer:
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
-        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid'))
         self.model.add(Activation('relu'))
 
 
-        self.model.add(Dropout(0.3))
 
 
-        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid' ) )
         self.model.add(Activation('relu'))
 
+        self.model.add(Dropout(0.5))
 
-        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-
-        self.model.add(Dropout(0.3))
     
-        self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
         self.model.add(Activation('relu'))
 
@@ -97,13 +91,11 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
 
 
-        self.model.add(BatchNormalization())
         self.model.add(Dense(50,name='fc2'))
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(0.3))
+        self.model.add(Dropout(0.5))
 
-        self.model.add(BatchNormalization())
         self.model.add(Dense(10,name='fc3'))
         self.model.add(Activation('relu'))
 
