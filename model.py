@@ -11,6 +11,8 @@ from datetime import timedelta, datetime
 import pytz
 import os
 
+np.random.seed(3721) 
+
 class qModelTrainer:
 
     def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 40):
@@ -29,11 +31,11 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec15_MentorSD/driving_log.csv',
+                            # 'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
-                            'recordings/rec14_backTrack3/driving_log.csv',
-                            'recordings/rec10_right_turn/driving_log.csv',
+                            # 'recordings/rec14_backTrack3/driving_log.csv',
+                            # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
                             'recordings/rec5_udacity/data/driving_log.csv',
@@ -57,30 +59,34 @@ class qModelTrainer:
     def buildModel_nvidia(self):
 
 
-        self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
+        self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
         self.model.add(Activation('relu'))
+        self.model.add(BatchNormalization())
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
         self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
         self.model.add(Activation('relu'))
+        self.model.add(BatchNormalization())
 
 
 
-        self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid' ) )
+        self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2),  name='cnn2', border_mode='valid' ) )
         self.model.add(Activation('relu'))
+        self.model.add(BatchNormalization())
 
         self.model.add(Dropout(0.3))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(Activation('relu'))
+        self.model.add(BatchNormalization())        
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
     
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
         self.model.add(Activation('relu'))
-
+        self.model.add(BatchNormalization())
 
         #FC0
         # self.model.add(BatchNormalization())
@@ -88,16 +94,17 @@ class qModelTrainer:
         
         self.model.add(Dense(100,name='fc1'))
         self.model.add(Activation('relu'))
-
+        self.model.add(BatchNormalization())
 
         self.model.add(Dense(50,name='fc2'))
         self.model.add(Activation('relu'))
+        self.model.add(BatchNormalization())
 
         self.model.add(Dropout(0.5))
 
         self.model.add(Dense(10,name='fc3'))
         self.model.add(Activation('relu'))
-
+        self.model.add(BatchNormalization())
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
@@ -125,7 +132,7 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(ELU())
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
+        self.model.add(BatchNormalization())
 
 
         self.model.add(Flatten())
