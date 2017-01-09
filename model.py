@@ -32,11 +32,11 @@ class qModelTrainer:
                             'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
-                            # 'recordings/rec14_backTrack3/driving_log.csv',
-                            # 'recordings/rec10_right_turn/driving_log.csv',
+                            'recordings/rec14_backTrack3/driving_log.csv',
+                            'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            # 'recordings/rec5_udacity/data/driving_log.csv',
+                            'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
 
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = 0.1)
@@ -75,6 +75,7 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(Activation('relu'))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
     
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
@@ -246,7 +247,7 @@ def getArgs():
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
     parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
-    parser.add_argument("--disable_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
+    parser.add_argument("--no_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     args = parser.parse_args()
 
     return args
@@ -279,7 +280,7 @@ def main():
 
     else:
         #normal training
-        if args.disable_flip:
+        if args.no_flip:
             enable_flip = False
         else:
             enable_flip = True
