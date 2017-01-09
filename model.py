@@ -13,7 +13,7 @@ import os
 
 class qModelTrainer:
 
-    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True):
+    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 40):
 
         if enable_incremental_learning:
             # new learning materials
@@ -42,7 +42,7 @@ class qModelTrainer:
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = 0.1)
 
         self.InputShape = self.DatasetMgr.getInputShape()
-
+        self.batch_size = batch_size
         self.path_model_checkpoints = 'checkpoints'
 
         if enable_incremental_learning:
@@ -59,9 +59,9 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(24, 5, 5, subsample=(3, 3), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
 
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(ELU())
 
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
         self.model.add(BatchNormalization())
@@ -77,13 +77,14 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
+        self.model.add(Dropout(0.5))
 
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(ELU())
 
 
-        # self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.5))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
@@ -162,7 +163,7 @@ class qModelTrainer:
         if num_samples< 64: # debugging
             history = self.model.fit_generator(generator_train(batch_size=1), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
         else:
-            history = self.model.fit_generator(generator_train(batch_size=64), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+            history = self.model.fit_generator(generator_train(batch_size=self.batch_size), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
     def trainModel_SavePerEpoch(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
@@ -176,7 +177,7 @@ class qModelTrainer:
 
                 history = self.model.fit_generator(generator_train(batch_size=1), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
             else:
-                history = self.model.fit_generator(generator_train(batch_size=64), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+                history = self.model.fit_generator(generator_train(batch_size=self.batch_size), num_samples, 1, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
 
             print("Epoch: ", i+1)    
             self.saveModel()
