@@ -133,6 +133,7 @@ class qDatasetManager:
 
         if debug_size == None:
             (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
+
         else:
             #debug
             self.np_img_loc_X_Train =   self.np_img_loc_augm
