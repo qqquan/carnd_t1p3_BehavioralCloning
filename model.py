@@ -70,7 +70,6 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid' ) )
         self.model.add(Activation('relu'))
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(Dropout(0.3))
 
@@ -78,8 +77,8 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
 
     
-        # self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
-        # self.model.add(Activation('relu'))
+        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
+        self.model.add(Activation('relu'))
 
 
         #FC0
