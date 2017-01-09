@@ -5,7 +5,6 @@ import cv2
 IMG_SCALE = 1 
 
 def normalizeImg(np_images):
-
     return (np_images-128.0)/255.0
 
 # cut off upper part of image
@@ -22,9 +21,10 @@ def prepImg(a_image, scale = IMG_SCALE):
     a_image = cv2.cvtColor(a_image, cv2.COLOR_BGR2YUV)
 
     a_image = cropRoadImage(a_image)
-    img_resi = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
-    img_resi_norm = normalizeImg(img_resi)
-    return img_resi_norm
+
+    a_image = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
+    a_image = normalizeImg(a_image)
+    return a_image
 
 #drop angles that's less than a threshold
 def prepAngle(np_angles):

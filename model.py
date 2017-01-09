@@ -82,6 +82,7 @@ class qModelTrainer:
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(ELU())
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
         self.model.add(Dropout(0.5))
