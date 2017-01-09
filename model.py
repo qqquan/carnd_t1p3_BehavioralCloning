@@ -51,10 +51,24 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_nvidia()
+            self.buildModel_basic()
 
         self.clearSavedModels()
 
+    def buildModel_basic(self):
+        self.model.add(Convolution2D(32, 3, 3, border_mode='valid', input_shape=self.InputShape, activation='relu') )
+        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='default') )
+        self.model.add(Dropout(0.5) )
+        self.model.add(Convolution2D(32, 3, 3, border_mode='valid', activation='relu') )
+        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='default') )
+        self.model.add(Flatten() )
+        self.model.add(Dense(1) )
+
+        adamOptm = keras.optimizers.Adam(lr=0.0001)
+
+        self.model.compile(loss='mean_squared_error', optimizer=adamOptm, metrics=['acc'])
+
+        self.model.summary() 
 
     def buildModel_nvidia(self):
 
