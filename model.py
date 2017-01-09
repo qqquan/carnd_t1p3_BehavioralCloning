@@ -63,24 +63,23 @@ class qModelTrainer:
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
-        self.model.add(Convolution2D(36, 3,3, name='cnn1', border_mode='valid'))
+        self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
         self.model.add(Activation('relu'))
-
 
 
 
         self.model.add(Convolution2D(48, 5, 5, name='cnn2', border_mode='valid' ) )
         self.model.add(Activation('relu'))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(Activation('relu'))
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
     
-        self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
-        self.model.add(Activation('relu'))
+        # self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
+        # self.model.add(Activation('relu'))
 
 
         #FC0
@@ -113,24 +112,28 @@ class qModelTrainer:
 
     def buildModel_commaai(self):
 
-        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5), input_shape = self.InputShape, border_mode="same"))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), input_shape = self.InputShape, border_mode="same"))
         self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same"))
+        
+        self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(ELU())
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(Dropout(.5))
 
+        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(ELU())
         self.model.add(BatchNormalization(input_shape = self.InputShape))
-        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
+
 
         self.model.add(Flatten())
-        self.model.add(ELU())
 
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
         self.model.add(Dense(512))
         self.model.add(ELU())
+        self.model.add(Dropout(.5))
+
         self.model.add(Dense(1))
 
 
