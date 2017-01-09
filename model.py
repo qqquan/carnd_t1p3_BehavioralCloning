@@ -29,10 +29,10 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec15_MentorSD/driving_log.csv',
-                            'recordings/rec13_sideDirt1/driving_log.csv',
+                            # 'recordings/rec15_MentorSD/driving_log.csv',
+                            # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
-                            'recordings/rec14_backTrack3/driving_log.csv',
+                            # 'recordings/rec14_backTrack3/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
@@ -69,7 +69,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
 
 
         self.model.add(BatchNormalization())
@@ -77,7 +77,7 @@ class qModelTrainer:
         self.model.add(ELU())
 
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
 
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
@@ -85,7 +85,7 @@ class qModelTrainer:
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
     
         self.model.add(BatchNormalization())
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
@@ -104,6 +104,7 @@ class qModelTrainer:
         self.model.add(Dense(50,name='fc2'))
         self.model.add(ELU())
 
+        self.model.add(Dropout(0.3))
 
         self.model.add(BatchNormalization())
         self.model.add(Dense(10,name='fc3'))
@@ -115,7 +116,7 @@ class qModelTrainer:
 
         self.Optimizer = keras.optimizers.Adam(lr=0.0001)
 
-        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer)
+        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer, metrics=['acc'])
 
 
         # self.model.compile(loss='mse', optimizer='adam') 
