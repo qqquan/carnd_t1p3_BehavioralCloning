@@ -150,12 +150,10 @@ class qModelTrainer:
         self.model.add(Flatten())
         self.model.add(Dropout(.2))
         self.model.add(ELU())
-        self.model.add(BatchNormalization())
 
         self.model.add(Dense(512))
         self.model.add(Dropout(.5))
         self.model.add(ELU())
-        self.model.add(BatchNormalization())
         
         self.model.add(Dense(1))
 
