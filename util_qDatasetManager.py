@@ -18,7 +18,7 @@ def cropRoadImage(np_img, cutoff_ratio = 0.35):
 # a_image is a BGR image
 def prepImg(a_image, scale = IMG_SCALE):
 
-    a_image = cv2.cvtColor(a_image, cv2.COLOR_BGR2YUV)
+    # a_image = cv2.cvtColor(a_image, cv2.COLOR_BGR2YUV)
 
     a_image = cropRoadImage(a_image)
 
