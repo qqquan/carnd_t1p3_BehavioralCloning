@@ -73,7 +73,7 @@ class qModelTrainer:
     def buildModel_nvidia(self):
 
 
-        self.model.add(BatchNormalization())
+        self.model.add(BatchNormalization(input_shape=self.InputShape))
 
         self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
         self.model.add(Activation('relu'))
