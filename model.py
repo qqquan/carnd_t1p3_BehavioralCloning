@@ -137,6 +137,7 @@ class qModelTrainer:
         
         self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4),  border_mode="same"))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(Dropout(.5))
 
         self.model.add(ELU())
 
