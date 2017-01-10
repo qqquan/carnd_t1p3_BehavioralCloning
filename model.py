@@ -15,7 +15,7 @@ np.random.seed(3721)
 
 class qModelTrainer:
 
-    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 512):
+    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 255):
 
         if enable_incremental_learning:
             # new learning materials
