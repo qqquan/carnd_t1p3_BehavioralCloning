@@ -134,9 +134,12 @@ class qModelTrainer:
     def buildModel_commaai(self):
 
         self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), input_shape = self.InputShape, border_mode="same"))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(ELU())
         self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        
         self.model.add(ELU())
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
