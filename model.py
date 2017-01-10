@@ -146,6 +146,9 @@ class qModelTrainer:
         self.model.add(ELU())
 
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(ELU())
+        
+        self.model.add(Convolution2D(128, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
         self.model.add(Dropout(.5))
         self.model.add(ELU())
