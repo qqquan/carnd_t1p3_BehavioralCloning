@@ -77,7 +77,7 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
         self.model.add(Activation('relu'))
-        self.model.add(Dropout(.5))
+        self.model.add(Dropout(.2))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -85,19 +85,19 @@ class qModelTrainer:
         self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(.5))
+        self.model.add(Dropout(.2))
 
 
         self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2),  name='cnn2', border_mode='valid' ) )
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.2))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
         self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        self.model.add(Dropout(.5))
+        self.model.add(Dropout(.2))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
         self.model.add(Activation('relu'))
@@ -112,7 +112,7 @@ class qModelTrainer:
         self.model.add(Dense(50,name='fc2'))
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.2))
 
         self.model.add(Dense(10,name='fc3'))
         self.model.add(Activation('relu'))
