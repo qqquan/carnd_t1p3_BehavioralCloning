@@ -51,7 +51,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_basic()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
@@ -134,34 +134,21 @@ class qModelTrainer:
     def buildModel_commaai(self):
 
         self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), input_shape = self.InputShape, border_mode="same"))
+
         self.model.add(ELU())
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
-        self.model.add(BatchNormalization(input_shape = self.InputShape))
-        
         self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(ELU())
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
-
-        self.model.add(Dropout(.5))
-
-        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
-        self.model.add(ELU())
-        self.model.add(BatchNormalization())
-
-
+        self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
-
-        self.model.add(Dense(512))
+        self.model.add(Dropout(.2))
         self.model.add(ELU())
+        self.model.add(Dense(512))
         self.model.add(Dropout(.5))
-
+        self.model.add(ELU())
         self.model.add(Dense(1))
 
-
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
-
-        self.model.compile(loss='mean_squared_error', optimizer=self.Optimizer)
-        
+        self.model.compile(optimizer="adam", loss="mse")    
+            
         self.model.summary() 
 
     def trainModel(self, epoch):
