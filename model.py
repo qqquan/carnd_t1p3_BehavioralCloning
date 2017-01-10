@@ -15,7 +15,7 @@ np.random.seed(3721)
 
 class qModelTrainer:
 
-    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 40):
+    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 512):
 
         if enable_incremental_learning:
             # new learning materials
@@ -31,7 +31,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            # 'recordings/rec15_MentorSD/driving_log.csv',
+                            'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
