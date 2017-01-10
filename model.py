@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 from util_qDatasetManager import qDatasetManager
 from keras.models import Sequential
-from keras.layers import Input, Dense, Activation, Flatten, Dropout, ELU, ActivityRegularization
+from keras.layers import Input, Dense, Activation, Flatten, Dropout, ELU, ActivityRegularization, Lambda
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 import keras
@@ -133,7 +133,8 @@ class qModelTrainer:
 
     def buildModel_commaai(self):
 
-        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4), input_shape = self.InputShape, border_mode="same"))
+        self. model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4),  border_mode="same"))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(ELU())

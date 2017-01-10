@@ -23,7 +23,7 @@ def prepImg(a_image, scale = IMG_SCALE):
     a_image = cropRoadImage(a_image)
 
     a_image = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
-    a_image = normalizeImg(a_image)
+    # a_image = normalizeImg(a_image)
     return a_image
 
 #drop angles that's less than a threshold
