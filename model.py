@@ -33,7 +33,7 @@ class qModelTrainer:
              ls_records = [  
                             'recordings/rec16_troubleSpots/driving_log.csv',
                             'recordings/rec18_rightTurn/driving_log.csv',
-                            # 'recordings/rec15_MentorSD/driving_log.csv',
+                            'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
@@ -53,7 +53,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_commaai()
+            self.buildModel_nvidia()
 
         self.clearSavedModels()
 
@@ -77,7 +77,7 @@ class qModelTrainer:
 
         self.model.add(BatchNormalization(input_shape=self.InputShape))
 
-        self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2), input_shape = self.InputShape, name='cnn0',border_mode='valid',))
+        self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2),  name='cnn0',border_mode='valid',))
         self.model.add(Activation('relu'))
         self.model.add(Dropout(.2))
 
@@ -87,7 +87,7 @@ class qModelTrainer:
         self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(.2))
+        self.model.add(Dropout(.5))
 
 
         self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2),  name='cnn2', border_mode='valid' ) )
@@ -99,7 +99,7 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        self.model.add(Dropout(.2))
+        self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
         self.model.add(Activation('relu'))
@@ -114,7 +114,7 @@ class qModelTrainer:
         self.model.add(Dense(50,name='fc2'))
         self.model.add(Activation('relu'))
 
-        self.model.add(Dropout(0.2))
+        self.model.add(Dropout(0.5))
 
         self.model.add(Dense(10,name='fc3'))
         self.model.add(Activation('relu'))
