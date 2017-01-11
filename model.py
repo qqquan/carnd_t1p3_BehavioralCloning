@@ -34,9 +34,10 @@ class qModelTrainer:
                             'recordings/rec16_troubleSpots/driving_log.csv',
                             'recordings/rec18_rightTurn/driving_log.csv',
                             'recordings/rec19_rightTurn2/driving_log.csv',
+                            'recordings/rec21_rightTurn3/driving_log.csv',
                             'recordings/rec17_troubl_dirt/driving_log.csv',
                             'recordings/rec20_after1stTurn/driving_log.csv',
-                            'recordings/rec15_MentorSD/driving_log.csv',
+                            # 'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
@@ -149,8 +150,8 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
         self.model.add(Dropout(.5))
 
-        # self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
-        # self.model.add(Activation('relu'))
+        self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
+        self.model.add(Activation('relu'))
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
