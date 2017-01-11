@@ -265,6 +265,7 @@ class qModelTrainer:
 def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
+    parser.add_argument('--batch_size', type=int, default=255, help='Batch Size.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
     parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     parser.add_argument("--no_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
@@ -295,7 +296,7 @@ def main():
             racer_trainer.debugModel()
 
     elif args.increm:
-        racer_trainer = qModelTrainer(enable_incremental_learning=True, debug_size = None)    
+        racer_trainer = qModelTrainer(enable_incremental_learning=True, debug_size = None, batch_size = args.batch_size)    
         racer_trainer.trainModel_SavePerEpoch(args.epoch)
 
     else:
@@ -306,7 +307,7 @@ def main():
             enable_flip = True
 
 
-        racer_trainer = qModelTrainer(enable_incremental_learning=False, enable_aug_flip= enable_flip, debug_size = None)    
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, enable_aug_flip= enable_flip, batch_size = args.batch_size)    
 
         if 'per_epoch' in args.cfg:
             racer_trainer.trainModel_SavePerEpoch(args.epoch)
