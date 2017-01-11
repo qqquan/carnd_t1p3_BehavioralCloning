@@ -35,6 +35,7 @@ class qModelTrainer:
                             'recordings/rec18_rightTurn/driving_log.csv',
                             'recordings/rec19_rightTurn2/driving_log.csv',
                             'recordings/rec17_troubl_dirt/driving_log.csv',
+                            'recordings/rec20_after1stTurn/driving_log.csv',
                             # 'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
@@ -55,7 +56,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_nvidia()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
