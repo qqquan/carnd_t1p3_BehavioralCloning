@@ -58,7 +58,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_commaai()
+            self.buildModel_nvidia()
 
         self.clearSavedModels()
 
