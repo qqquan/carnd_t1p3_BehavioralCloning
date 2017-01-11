@@ -35,6 +35,7 @@ class qModelTrainer:
                             'recordings/rec18_rightTurn/driving_log.csv',
                             'recordings/rec19_rightTurn2/driving_log.csv',
                             'recordings/rec21_rightTurn3/driving_log.csv',
+                            'recordings/rec22_rightTurn4/driving_log.csv',
                             'recordings/rec17_troubl_dirt/driving_log.csv',
                             'recordings/rec20_after1stTurn/driving_log.csv',
                             # 'recordings/rec15_MentorSD/driving_log.csv',
@@ -138,14 +139,13 @@ class qModelTrainer:
 
         self. model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         
-        self.model.add(Convolution2D(16, 8, 8, subsample=(4, 4),  border_mode="same"))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5),  border_mode="same"))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(.5))
 
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(Convolution2D(32, 5, 5, subsample=(3, 3), border_mode="same"))
         
         self.model.add(Activation('relu'))
         self.model.add(Dropout(.5))
