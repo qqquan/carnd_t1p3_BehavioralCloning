@@ -11,7 +11,6 @@ from datetime import timedelta, datetime
 import pytz
 import os
 
-np.random.seed(3721) 
 
 class qModelTrainer:
 
@@ -284,6 +283,7 @@ def getArgs():
 
 def main():
     import time
+    np.random.seed(3721) 
 
     time_start = time.time()
 
