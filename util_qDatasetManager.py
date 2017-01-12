@@ -148,7 +148,7 @@ class qDatasetManager:
         self.np_sim_sheet = df_complete_records.values
 
         #remove row that has a small angle, because the image pattern of a straight lane are similar and are more repeatative than curve data 
-        self.np_sim_sheet = removeSmallValues(self.np_sim_sheet, colum = 3, thresh = 0.01, prob = 0.4 )
+        # self.np_sim_sheet = removeSmallValues(self.np_sim_sheet, colum = 3, thresh = 0.01, prob = 0.4 )
 
 
         if debug_size: #debug:
