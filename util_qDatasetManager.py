@@ -58,7 +58,7 @@ def getCrossValiSets(X, y, training_len=0.75):
 
     import sklearn.model_selection
 
-    X_Train, X_Vali, y_Train, y_Vali =  sklearn.model_selection.train_test_split(  X, 
+    X_Train, X_Vali, y_Train, y_Vali =  sklearn.model_selection.train_test_split(   X, 
                                                                                     y, 
                                                                                     train_size =0.75, 
 
@@ -95,6 +95,27 @@ def localizeImgPath(df_sheet, relative_csv_loc):
 
 
 
+
+def removeSmallValues(np_matrix, colum, thresh = 0.01, prob = 0.3 ):
+    '''
+    np_matrix: 2d array
+    colum: if the element in column is less than threshold, then the row is removed from the matrix
+    thresh: value less than threshold is considered small value
+    prob: probablity of the actual removal 
+
+    '''
+    idx=0
+    for row in np_matrix:
+        if np.random.rand(1) < prob:
+            if row[colum] < thresh:
+                np_matrix = np.delete(np_matrix,idx, axis=0)
+        else:
+            idx+=1 #increment when there is no removal. the index is for the matrix after removal
+
+        
+
+    return np_matrix
+
 class qDatasetManager:
 
 
@@ -118,12 +139,16 @@ class qDatasetManager:
 
             df_sheet_newpath = localizeImgPath(df_sheet, a_cvs)
 
+
             ls_dataframes.append(df_sheet_newpath)
 
         df_complete_records = pd.concat(ls_dataframes)
 
         self.np_sim_sheet = np.array([])
         self.np_sim_sheet = df_complete_records.values
+
+        #remove row that has a small angle, because the image pattern of a straight lane are similar and are more repeatative than curve data 
+        self.np_sim_sheet = removeSmallValues(self.np_sim_sheet, colum = 3, thresh = 0.01, prob = 0.4 )
 
 
         if debug_size: #debug:
@@ -343,6 +368,14 @@ def main():
                    # 'recordings/rec0/driving_log.csv',
                  ]
     dataset_mgr = qDatasetManager(ls_records, debug_size=TST_SampleSize)
+
+
+    a = np.array([[1,0.2],[3,.4],[5,.006]])
+    print('before removal: \n', a)
+
+    b = removeSmallValues(a, colum = 1)
+    print('np.random.rand(1) :', np.random.rand(1) )
+    print('after removal: \n ', b)
 
     dataset_mgr.loadDataToMemory()
 
