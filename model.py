@@ -58,7 +58,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_nvidia()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
@@ -152,7 +152,7 @@ class qModelTrainer:
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(Activation('relu'))
         
-        self.model.add(Convolution2D(128, 3, 3, subsample=(2, 2), border_mode="same"))
+        self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
         self.model.add(Dropout(.5))
         self.model.add(Activation('relu'))
@@ -163,7 +163,8 @@ class qModelTrainer:
         
         self.model.add(Dense(1))
 
-        self.model.compile(optimizer="adam", loss="mse")    
+        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
+        self.model.compile(optimizer=self.Optimizer , loss="mse")    
             
         self.model.summary() 
 
