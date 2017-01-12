@@ -281,6 +281,7 @@ class qDatasetManager:
         ls_left_img = self.getLeftImgLocList()
         ls_right_img = self.getRightImgLocList()
 
+
         self.np_images_center = loadImgToNumpy(ls_center_img, self.img_scale) 
         self.np_images_left = loadImgToNumpy(ls_left_img, self.img_scale) 
         self.np_images_right = loadImgToNumpy(ls_right_img, self.img_scale) 

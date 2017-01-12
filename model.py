@@ -83,46 +83,46 @@ class qModelTrainer:
         self.model.add(BatchNormalization(input_shape=self.InputShape))
 
         self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2),  name='cnn0',border_mode='valid',))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(Dropout(.3))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
         self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Dropout(.5))
 
 
         self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2),  name='cnn2', border_mode='valid' ) )
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Dropout(0.3))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn3', border_mode='valid'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
         self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         #FC0
         # self.model.add(BatchNormalization())
         self.model.add(Flatten(name='fc0_flatten'))
         
         self.model.add(Dense(100,name='fc1'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Dense(50,name='fc2'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Dropout(0.5))
 
         self.model.add(Dense(10,name='fc3'))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         #FC7
         self.model.add(Dense(1, name='fc7'))
@@ -142,24 +142,24 @@ class qModelTrainer:
         self.model.add(Convolution2D(16, 8, 8, subsample=(6, 6),  border_mode="same"))
         self.model.add(Dropout(.5))
 
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Convolution2D(32, 6, 6, subsample=(4, 4), border_mode="same"))
         
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
         self.model.add(Dropout(.5))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
 
         self.model.add(Dense(512))
         self.model.add(Dropout(.5))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         
         self.model.add(Dense(1))
 
@@ -242,18 +242,22 @@ class qModelTrainer:
 
         np_img_c, np_img_l, np_img_r = self.DatasetMgr.getImg() #todo: fix tuple return
 
-        print('np_img_c shape: ', np_img_c.shape)
-        np_images = np_img_c[None,0,:] # maintain the required dimension as model input
-        steering_angle = float(self.model.predict(np_images, batch_size=1))
+        exp_angles = self.DatasetMgr.getY()
+
+        img_idx = 0  #TODO: only support zero, because getY() returns a stacked angle list, while getImg returns separate side images.
+
+        img = np_img_c[None,img_idx,:] # maintain the required dimension as model input
+        steering_angle = float(self.model.predict(img, batch_size=1))
         print('Angle Prediction(center): ' , steering_angle)
 
-        np_images = np_img_l[None,0,:]
-        steering_angle = float(self.model.predict(np_images, batch_size=1))
+        img = np_img_l[None,img_idx,:]
+        steering_angle = float(self.model.predict(img, batch_size=1))
         print('Angle Prediction(left): ' , steering_angle)
 
-        np_images = np_img_r[None,0,:]
-        steering_angle = float(self.model.predict(np_images, batch_size=1))
+        img = np_img_r[None,img_idx,:]
+        steering_angle = float(self.model.predict(img, batch_size=1))
         print('Angle Prediction(right): ' , steering_angle)        
+
 
     def clearSavedModels(self):
         import glob, os
