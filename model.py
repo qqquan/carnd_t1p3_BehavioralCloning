@@ -136,14 +136,14 @@ class qModelTrainer:
 
     def buildModel_commaai(self):
 
-        self. model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
-        
+        self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         self.model.add(Convolution2D(16, 8, 8, subsample=(6, 6),  border_mode="same"))
-        self.model.add(Dropout(.5))
 
         self.model.add(ELU())
+        self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(32, 6, 6, subsample=(4, 4), border_mode="same"))
+        
         
         self.model.add(ELU())
         self.model.add(Dropout(.5))
@@ -162,7 +162,7 @@ class qModelTrainer:
         
         self.model.add(Dense(1))
 
-        self.Optimizer = keras.optimizers.Adam(lr=0.0001)
+        self.Optimizer = keras.optimizers.Adam(lr=0.001)
         self.model.compile(optimizer=self.Optimizer , loss="mse")    
             
         self.model.summary() 
@@ -293,7 +293,7 @@ def main():
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3 )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
-        epochs = 5
+        epochs = 15 # sanity check if we can overfit a small example set --> check if loss is driven to zero
         print('Expected Steering Angle: \n', racer_trainer.DatasetMgr.getY())
 
         for epo in range(epochs):
