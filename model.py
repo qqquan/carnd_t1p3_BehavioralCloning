@@ -139,26 +139,26 @@ class qModelTrainer:
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         self.model.add(Convolution2D(16, 8, 8, subsample=(6, 6),  border_mode="same"))
 
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(32, 6, 6, subsample=(4, 4), border_mode="same"))
         
         
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
         self.model.add(Dropout(.5))
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
 
         self.model.add(Dense(512))
         self.model.add(Dropout(.5))
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         
         self.model.add(Dense(1))
 
