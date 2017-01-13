@@ -141,27 +141,27 @@ class qModelTrainer:
         
         self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5),  border_mode="same"))
         self.model.add(BatchNormalization())
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
 
         self.model.add(Convolution2D(32, 6, 6, subsample=(4, 4), border_mode="same"))
         self.model.add(BatchNormalization())
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         
         
         self.model.add(Dropout(.3))
 
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(BatchNormalization())
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(BatchNormalization())
         self.model.add(Flatten())
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
 
         self.model.add(Dense(512))
         self.model.add(BatchNormalization())
-        self.model.add(ELU())
+        self.model.add(Activation('relu'))
         self.model.add(Dropout(.3))
         
         self.model.add(Dense(1))
