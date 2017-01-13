@@ -30,7 +30,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec24_dirtSide2/driving_log.csv',
+                            # 'recordings/rec24_dirtSide2/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec22_rightTurn4/driving_log.csv',
                             # 'recordings/rec23_after1stTurn2/driving_log.csv',
@@ -85,15 +85,11 @@ class qModelTrainer:
 
         self.model.add(Convolution2D(24, 5, 5, subsample=(2, 2),  name='cnn0',border_mode='valid',))
         self.model.add(ELU())
-        self.model.add(Dropout(.3))
 
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-
         self.model.add(Convolution2D(36, 5,5, name='cnn1', border_mode='valid'))
         self.model.add(ELU())
-
-        self.model.add(Dropout(.5))
 
 
         self.model.add(Convolution2D(48, 5, 5, subsample=(2, 2),  name='cnn2', border_mode='valid' ) )
@@ -105,7 +101,6 @@ class qModelTrainer:
         self.model.add(ELU())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
 
-        self.model.add(Dropout(.5))
 
         self.model.add(Convolution2D(64, 3,3,name='cnn4', border_mode='valid'))
         self.model.add(ELU())
@@ -116,6 +111,7 @@ class qModelTrainer:
         
         self.model.add(Dense(100,name='fc1'))
         self.model.add(ELU())
+        self.model.add(Dropout(.5))
 
         self.model.add(Dense(50,name='fc2'))
         self.model.add(ELU())
@@ -149,11 +145,11 @@ class qModelTrainer:
         self.model.add(Activation('relu'))
         
         
-        self.model.add(Dropout(.3))
-
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
         self.model.add(BatchNormalization())
         self.model.add(Activation('relu'))
+        
+        self.model.add(Dropout(.3))
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(BatchNormalization())
@@ -163,7 +159,7 @@ class qModelTrainer:
         self.model.add(Dense(512))
         self.model.add(BatchNormalization())
         self.model.add(Activation('relu'))
-        self.model.add(Dropout(.3))
+        self.model.add(Dropout(.5))
         
         self.model.add(Dense(1))
 
