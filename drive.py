@@ -61,6 +61,7 @@ def send_control(steering_angle, throttle):
 
 
 if __name__ == '__main__':
+    np.random.seed(3721) 
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument('model', type=str,
     help='Path to model definition json. Model weights should be on the same path.')

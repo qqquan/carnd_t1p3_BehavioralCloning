@@ -30,13 +30,14 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            # 'recordings/rec22_rightTurn4/driving_log.csv',
+                            'recordings/rec22_rightTurn4/driving_log.csv',
+                            'recordings/rec23_after1stTurn2/driving_log.csv',
                             # 'recordings/rec16_troubleSpots/driving_log.csv',
                             # 'recordings/rec18_rightTurn/driving_log.csv',
                             # 'recordings/rec19_rightTurn2/driving_log.csv',
                             # 'recordings/rec21_rightTurn3/driving_log.csv',
                             'recordings/rec17_troubl_dirt/driving_log.csv',
-                            'recordings/rec20_after1stTurn/driving_log.csv',
+                            # 'recordings/rec20_after1stTurn/driving_log.csv',
                             # 'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
@@ -118,7 +119,7 @@ class qModelTrainer:
         self.model.add(Dense(50,name='fc2'))
         self.model.add(ELU())
 
-        self.model.add(Dropout(0.5))
+        self.model.add(Dropout(0.3))
 
         self.model.add(Dense(10,name='fc3'))
         self.model.add(ELU())
@@ -138,27 +139,27 @@ class qModelTrainer:
 
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         
-        self.model.add(Convolution2D(16, 8, 8, subsample=(6, 6),  border_mode="same"))
-        self.model.add(Activation('relu'))
+        self.model.add(Convolution2D(16, 8, 8, subsample=(5, 5),  border_mode="same"))
+        self.model.add(ELU())
 
         self.model.add(Dropout(.3))
 
         self.model.add(Convolution2D(32, 6, 6, subsample=(4, 4), border_mode="same"))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         
         
         self.model.add(Dropout(.3))
 
         self.model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         
         self.model.add(Convolution2D(64, 3, 3, subsample=(2, 2), border_mode="same"))
         self.model.add(Flatten())
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(Dropout(.3))
 
         self.model.add(Dense(512))
-        self.model.add(Activation('relu'))
+        self.model.add(ELU())
         self.model.add(Dropout(.3))
         
         self.model.add(Dense(1))
