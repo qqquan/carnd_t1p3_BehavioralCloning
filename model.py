@@ -66,10 +66,10 @@ class qModelTrainer:
     def buildModel_basic(self):
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         
-        self.model.add(Convolution2D(16, 11, 11, subsample=(9, 9),  border_mode="same"))
+        self.model.add(Convolution2D(16, 11, 11, subsample=(7, 7),  border_mode="same"))
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(16, 3, 3, subsample=(2, 2), border_mode="same"))
+        self.model.add(Convolution2D(16, 6, 6, subsample=(3, 3), border_mode="same"))
         self.model.add(Activation('relu'))
 
         self.model.add(Dropout(.5))
