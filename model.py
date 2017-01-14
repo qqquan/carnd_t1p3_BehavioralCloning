@@ -30,9 +30,9 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            # 'recordings/rec24_dirtSide2/driving_log.csv',
-                            # 'recordings/rec13_sideDirt1/driving_log.csv',
-                            # 'recordings/rec22_rightTurn4/driving_log.csv',
+                            'recordings/rec24_dirtSide2/driving_log.csv',
+                            'recordings/rec13_sideDirt1/driving_log.csv',
+                            'recordings/rec22_rightTurn4/driving_log.csv',
                             # 'recordings/rec23_after1stTurn2/driving_log.csv',
                             # 'recordings/rec16_troubleSpots/driving_log.csv',
                             # 'recordings/rec18_rightTurn/driving_log.csv',
@@ -40,7 +40,7 @@ class qModelTrainer:
                             # 'recordings/rec21_rightTurn3/driving_log.csv',
                             # 'recordings/rec17_troubl_dirt/driving_log.csv',
                             # 'recordings/rec20_after1stTurn/driving_log.csv',
-                            # 'recordings/rec15_MentorSD/driving_log.csv',
+                            'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
@@ -69,7 +69,7 @@ class qModelTrainer:
         self.model.add(Convolution2D(16, 11, 11, subsample=(9, 9),  border_mode="same"))
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(16, 6, 6, subsample=(5, 5), border_mode="same"))
+        self.model.add(Convolution2D(16, 6, 6, subsample=(4, 4), border_mode="same"))
         self.model.add(Activation('relu'))
 
         self.model.add(Dropout(.5))
