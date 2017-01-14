@@ -59,23 +59,25 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_commaai()
+            self.buildModel_basic()
 
         self.clearSavedModels()
 
     def buildModel_basic(self):
-        self.model.add(Convolution2D(32, 3, 3, border_mode='valid', input_shape=self.InputShape, activation='relu') )
-        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='default') )
-        self.model.add(Dropout(0.5) )
-        self.model.add(Convolution2D(32, 3, 3, border_mode='valid', activation='relu') )
-        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='default') )
-        self.model.add(Flatten() )
-        self.model.add(Dense(1) )
+        self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
+        
+        self.model.add(Convolution2D(36, 11, 11, subsample=(9, 9),  border_mode="same"))
+        self.model.add(Activation('relu'))
 
-        adamOptm = keras.optimizers.Adam(lr=0.0001)
 
-        self.model.compile(loss='mean_squared_error', optimizer=adamOptm, metrics=['acc'])
+        self.model.add(Dropout(.5))
+        self.model.add(Flatten())
+        
+        self.model.add(Dense(1))
 
+        self.Optimizer = keras.optimizers.Adam(lr=0.001)
+        self.model.compile(optimizer=self.Optimizer , loss="mse")    
+            
         self.model.summary() 
 
     def buildModel_nvidia(self):
