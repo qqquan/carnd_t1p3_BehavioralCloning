@@ -69,7 +69,7 @@ class qModelTrainer:
         self.model.add(Convolution2D(16, 6, 6, subsample=(3, 3),  border_mode="same"))
         self.model.add(Activation('relu'))
 
-        self.model.add(Convolution2D(16, 6, 6, subsample=(4, 4), border_mode="same"))
+        self.model.add(Convolution2D(16, 11, 11, subsample=(7, 7), border_mode="same"))
         self.model.add(Activation('relu'))
 
         self.model.add(Dropout(.5))
