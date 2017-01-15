@@ -35,7 +35,7 @@ class PerEpochSave(keras.callbacks.Callback):
         str_time = dt_now.strftime("%Y%m%d_%H%M%S")
 
 
-        file_name = str_model_name+ '_'+ str_time + '_'+'Epoch'+ str(epoch)
+        file_name = str_model_name+ '_'+ str_time + '_'+'Epoch'+ str(epoch+1)
 
         file_loc = os.path.join(relative_path, file_name) 
 
@@ -88,7 +88,7 @@ class qModelTrainer:
                             # 'recordings/rec2_curve/driving_log.csv',
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
-        print('Load dataset..')
+        print('Load dataset: ', ls_records)
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = lr_offset, enable_tiny_model = enable_tiny_model)
 
         self.InputShape = self.DatasetMgr.getInputShape()
@@ -420,13 +420,15 @@ def getArgs():
     parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     parser.add_argument("--tiny", default=False, action="store_true" , help="enable tiny model")
     parser.add_argument("--no_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
+    parser.add_argument('--seed', type=int, default=111111, help='seed to avoid randomness in Numpy random generator.')
+    
     args = parser.parse_args()
 
     return args
 
 def main():
     import time
-    np.random.seed(3721) 
+    np.random.seed(11111) 
 
     time_start = time.time()
 
@@ -462,7 +464,9 @@ def main():
     elif args.tiny:
         print('Enable tiny model..')
         print('Batch Size: ',args.batch_size)
-        racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip, lr_offset = args.lr_offset )    
+        racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip,
+                     lr_offset = 0.3 )    
+                     # lr_offset = args.lr_offset )    
         racer_trainer.trainModel(args.epoch) 
 
     else:
