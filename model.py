@@ -41,7 +41,7 @@ class qModelTrainer:
                             'recordings/rec21_rightTurn3/driving_log.csv',
                             # 'recordings/rec17_troubl_dirt/driving_log.csv',
                             # 'recordings/rec20_after1stTurn/driving_log.csv',
-                            # 'recordings/rec15_MentorSD/driving_log.csv',
+                            'recordings/rec15_MentorSD/driving_log.csv',
                             # 'recordings/rec11_backwardTrack/driving_log.csv',
                             # 'recordings/rec14_backTrack3/driving_log.csv',
                             # 'recordings/rec10_right_turn/driving_log.csv',
