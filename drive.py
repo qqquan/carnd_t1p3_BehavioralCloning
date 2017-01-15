@@ -15,7 +15,7 @@ from io import BytesIO
 from keras.models import model_from_json
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array
 
-from util_qDatasetManager import prepImg
+from util_qDatasetManager import prepImg, image_trim
 
 import cv2
 
@@ -37,7 +37,10 @@ def telemetry(sid, data):
     image = Image.open(BytesIO(base64.b64decode(imgString))) #class 'PIL.JpegImagePlugin.JpegImageFile
     image_array = np.asarray(image)
     image_array = image_array[:,:,::-1]  #convert RGB to BGR to match training with cv2
-    image_array = prepImg(image_array)
+    if True == Enable_Tiny_Model:
+        image_array = image_trim(image_array)
+    else:
+        image_array = prepImg(image_array)
     transformed_image_array = image_array[None, :, :, :]
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
@@ -70,13 +73,20 @@ def send_control(steering_angle, throttle):
     'throttle': throttle.__str__()
     }, skip_sid=True)
 
+Enable_Tiny_Model = False
 
 if __name__ == '__main__':
     np.random.seed(3721) 
     parser = argparse.ArgumentParser(description='Remote Driving')
-    parser.add_argument('model', type=str,
-    help='Path to model definition json. Model weights should be on the same path.')
+
+    parser.add_argument('model', type=str, help='Path to model definition json. Model weights should be on the same path.')
+
+    parser.add_argument("--tiny", default=False, action="store_true" , help="enable tiny model")
+
     args = parser.parse_args()
+
+    Enable_Tiny_Model = args.tiny
+
     with open(args.model, 'r') as jfile:
         model = model_from_json(jfile.read())
 

@@ -15,6 +15,25 @@ def cropRoadImage(np_img, cutoff_ratio = 0.35):
 
     return np_img[h_new_begin:h,:, :]
 
+
+def image_trim(img_bgr):
+    '''
+    by Mengxi Wu
+
+    resize and extract V  channel from color space to HSV
+
+    Oputput 3d shape: (row, column, 1)
+    '''
+    trimed = img_bgr#[20:140]
+#     resized = cv2.resize(img_bgr,(32,16))
+    resized = cv2.resize((cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV))[:,:,1],(32,16))
+
+
+    row, col = resized.shape
+    img_prep = np.reshape(resized, (row, col, 1))
+    return img_prep
+
+
 # a_image is a BGR image
 def prepImg(a_image, scale = IMG_SCALE):
 
@@ -24,6 +43,7 @@ def prepImg(a_image, scale = IMG_SCALE):
 
     a_image = cv2.resize(a_image,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
     # a_image = normalizeImg(a_image)
+
     return a_image
 
 #drop angles that's less than a threshold
@@ -35,12 +55,17 @@ def prepAngle(np_angles):
 
     return np_angle_filtered
 
-def loadImgToNumpy(ls_img, img_scale, enable_aug_flip = False):
+def loadImgToNumpy(ls_img, img_scale, enable_aug_flip = False, enable_tiny_model=False):
     ls_image = []
     ls_image_flip = []
     for file_loc in ls_img:
         img = cv2.imread(file_loc)
-        img_prep = prepImg(img, img_scale)
+        if True == enable_tiny_model:
+            img_prep = image_trim(img)
+
+        else:
+            img_prep = prepImg(img, img_scale)
+
         if img_prep is not None:
             ls_image.append(img_prep)
             if enable_aug_flip == True:
@@ -125,12 +150,14 @@ class qDatasetManager:
     IDX_COL_ANGLE = 3
 
     # offset_leftright_img: 0.04 - 1 degree; 0.1 - 2.5 degree
-    def __init__(self, ls_file_loc, img_scale=IMG_SCALE, enable_aug_flip=True, offset_leftright_img = 0.1, debug_size = None, ):
-        
+    def __init__(self, ls_file_loc, img_scale=IMG_SCALE, enable_aug_flip=True, offset_leftright_img = 0.1, debug_size = None, enable_tiny_model = False):
+        print('Initialize qDatasetManager..')
         self.img_scale = img_scale
         self.enable_aug_flip = enable_aug_flip
+        self.enable_tiny_model = enable_tiny_model
         self.offset_leftright_img = offset_leftright_img
-        
+       
+        print('Read csv log file.. ') 
         col_indx = [qDatasetManager.IDX_COL_CENTER_IMG, qDatasetManager.IDX_COL_LEFT_IMG, qDatasetManager.IDX_COL_RIGHT_IMG, qDatasetManager.IDX_COL_ANGLE]
 
         ls_dataframes = []
@@ -138,7 +165,6 @@ class qDatasetManager:
             df_sheet = pd.read_csv(a_cvs, skipinitialspace=True, usecols=col_indx, header=None )
 
             df_sheet_newpath = localizeImgPath(df_sheet, a_cvs)
-
 
             ls_dataframes.append(df_sheet_newpath)
 
@@ -154,6 +180,7 @@ class qDatasetManager:
         if debug_size: #debug:
             self.np_sim_sheet = self.np_sim_sheet[0:debug_size]
 
+        print('Augment data.. ')
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
 
         if debug_size == None:
@@ -223,9 +250,9 @@ class qDatasetManager:
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
 
                 if True == self.enable_aug_flip :
-                    np_x, np_x_flip = loadImgToNumpy(ls_x_loc, self.img_scale,  self.enable_aug_flip)
+                    np_x, np_x_flip = loadImgToNumpy(ls_x_loc, self.img_scale,   enable_aug_flip= self.enable_aug_flip, enable_tiny_model= self.enable_tiny_model)
                 else:
-                    np_x = loadImgToNumpy(ls_x_loc, self.img_scale,  self.enable_aug_flip)
+                    np_x = loadImgToNumpy(ls_x_loc, self.img_scale, enable_aug_flip = self.enable_aug_flip, enable_tiny_model=self.enable_tiny_model)
 
 
 
@@ -266,7 +293,7 @@ class qDatasetManager:
 
                 ls_x_loc = np_xx_loc[start_idx:end_idx]
 
-                np_x = loadImgToNumpy(ls_x_loc, self.img_scale)
+                np_x = loadImgToNumpy(ls_x_loc, self.img_scale, enable_tiny_model=self.enable_tiny_model)
 
                 np_y = np_yy[start_idx:end_idx]
 
@@ -345,7 +372,7 @@ class qDatasetManager:
         return np2d_ValiY
 
     def getInputShape(self): 
-        a_img = loadImgToNumpy([self.np_sim_sheet[0,0]], self.img_scale)  #example for calculating the image shape
+        a_img = loadImgToNumpy([self.np_sim_sheet[0,0]], self.img_scale, enable_tiny_model=self.enable_tiny_model )  #example for calculating the image shape
         return a_img.shape[1:]     
 
     def getInputNum(self):
