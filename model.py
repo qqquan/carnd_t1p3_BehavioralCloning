@@ -428,12 +428,12 @@ def getArgs():
 
 def main():
     import time
-    np.random.seed(args.seed) 
 
     time_start = time.time()
 
     args = getArgs()
 
+    np.random.seed(args.seed) 
        
     if args.no_flip:
         enable_flip = False
