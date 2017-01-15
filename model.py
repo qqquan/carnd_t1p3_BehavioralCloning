@@ -13,6 +13,42 @@ import os
 from keras.optimizers import Adam
 
 
+class PerEpochSave(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        return 
+    def on_train_end(self, logs={}):
+        return
+
+    def on_epoch_begin(self, epoch, logs={}):
+        return
+
+    def on_epoch_end(self, epoch, logs={}):
+        relative_path = 'checkpoints'
+        str_model_name = 'model'
+
+        if not os.path.exists(relative_path):
+            os.makedirs(relative_path)
+
+        dt_now = datetime.now(pytz.timezone('US/Eastern'))
+        # dt_now = datetime.now(pytz.timezone('US/Pacific'))
+
+        str_time = dt_now.strftime("%Y%m%d_%H%M%S")
+
+
+        file_name = str_model_name+ '_'+ str_time + '_'+'Epoch'+ str(epoch)
+
+        file_loc = os.path.join(relative_path, file_name) 
+
+        # serialize model to JSON
+        model_json = self.model.to_json()
+        with open(file_loc+".json", "w") as json_file:
+            json_file.write(model_json)
+        # serialize weights to HDF5
+        self.model.save_weights(file_loc+".h5")
+        print("\n Saved model to disk", file_name)
+
+        return
+
 class qModelTrainer:
     '''
     lr_offset: angle offset for left-right images
@@ -283,7 +319,9 @@ class qModelTrainer:
         if num_samples< 64: # debugging
             history = self.model.fit_generator(generator_train(batch_size=1), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
         else:
-            history = self.model.fit_generator(generator_train(batch_size=self.batch_size), num_samples, epoch, validation_data=generator_vali(), nb_val_samples=num_vali_samples )
+            history = self.model.fit_generator(generator_train(batch_size=self.batch_size), num_samples, epoch, 
+                                                validation_data=generator_vali(), nb_val_samples=num_vali_samples,  
+                                                callbacks = [PerEpochSave()])
 
     def trainModel_SavePerEpoch(self, epoch):
         generator_train = self.DatasetMgr.runBatchGenerator
@@ -372,6 +410,7 @@ class qModelTrainer:
         for f in filelist:
             os.remove(f)
 
+
 def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
@@ -423,7 +462,7 @@ def main():
     elif args.tiny:
         print('Enable tiny model..')
         racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip, lr_offset = args.lr_offset )    
-        racer_trainer.trainModel_SavePerEpoch(args.epoch) 
+        racer_trainer.trainModel(args.epoch) 
 
     else:
         #normal training
