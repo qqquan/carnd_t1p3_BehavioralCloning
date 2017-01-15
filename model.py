@@ -428,7 +428,7 @@ def getArgs():
 
 def main():
     import time
-    np.random.seed(11111) 
+    np.random.seed(args.seed) 
 
     time_start = time.time()
 
