@@ -10,6 +10,7 @@ from time import strftime
 from datetime import timedelta, datetime
 import pytz
 import os
+from keras.optimizers import Adam
 
 
 class qModelTrainer:
@@ -30,9 +31,9 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec24_dirtSide2/driving_log.csv',
-                            'recordings/rec13_sideDirt1/driving_log.csv',
-                            'recordings/rec22_rightTurn4/driving_log.csv',
+                            # 'recordings/rec24_dirtSide2/driving_log.csv',
+                            # 'recordings/rec13_sideDirt1/driving_log.csv',
+                            # 'recordings/rec22_rightTurn4/driving_log.csv',
                             # 'recordings/rec23_after1stTurn2/driving_log.csv',
                             # 'recordings/rec16_troubleSpots/driving_log.csv',
                             # 'recordings/rec18_rightTurn/driving_log.csv',
@@ -46,7 +47,7 @@ class qModelTrainer:
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            'recordings/rec5_udacity/data/driving_log.csv',
+                            # 'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
 
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = 0.1)
@@ -59,7 +60,7 @@ class qModelTrainer:
             self.reloadModel('model.json')
         else:
             self.model = Sequential()
-            self.buildModel_basic()
+            self.buildModel_Desoto()
 
         self.clearSavedModels()
 
@@ -80,6 +81,73 @@ class qModelTrainer:
         self.Optimizer = keras.optimizers.Adam(lr=0.001)
         self.model.compile(optimizer=self.Optimizer , loss="mse")    
             
+        self.model.summary() 
+
+    def buildModel_Desoto(self):
+        self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
+
+        #scale image from 160x320 to 32x64
+        self.model.add(Convolution2D(nb_row=1, nb_col=1, border_mode='valid', 
+                                nb_filter=3, init='normal',
+                               subsample=(5,5),
+                                name='subsample'))
+        # 5x5 with 2x2 striding          
+        self.model.add(Convolution2D(nb_row=5, nb_col=5, border_mode='valid', 
+                                nb_filter=24,
+                                   activation='relu',
+                                  init='normal'))
+        # self.model.add(MaxPooling2D(pool_size=(2,2)))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Convolution2D(nb_row=5, nb_col=5, border_mode='valid', 
+                                nb_filter=36,
+                                   activation='relu',
+                                  init='normal'))
+        self.model.add(MaxPooling2D(pool_size=(2,2)))
+
+        self.model.add(BatchNormalization())
+
+        # Nvidia model includes 3rd conv layer, which we don't use
+        # model.add(Convolution2D(nb_row=5, nb_col=5, border_mode='same', 
+        #                         nb_filter=48,
+        #                            activation='relu', subsample=(4,4), 
+        #                           init='normal'))
+        # model.add(BatchNormalization())
+
+        # 3x3 with no striding
+        self.model.add(Convolution2D(nb_row=3, nb_col=3, border_mode='valid', 
+                                nb_filter=64,
+                                   activation='relu',  
+                                  init='normal'))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Convolution2D(nb_row=3, nb_col=3, border_mode='valid', 
+                                nb_filter=64,
+                                   activation='relu',  
+                                  init='normal'))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Flatten(name='flatten'))
+
+        self.model.add(Dense(output_dim=1164, init='normal', activation='relu'))
+        self.model.add(Dropout(p=0.5))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Dense(output_dim=100, init='normal', activation='relu'))
+        self.model.add(Dropout(p=0.5))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Dense(output_dim=50, init='normal', activation='relu'))
+        self.model.add(Dropout(p=0.5))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Dense(output_dim=10, init='normal', activation='relu'))
+        self.model.add(Dropout(p=0.5))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Dense(output_dim=1, name='output', init='normal'))
+        
+        self.model.compile(loss='mse', metrics=['mse'], optimizer=Adam())
         self.model.summary() 
 
     def buildModel_nvidia(self):
