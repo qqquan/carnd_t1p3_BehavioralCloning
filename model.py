@@ -45,7 +45,7 @@ class PerEpochSave(keras.callbacks.Callback):
             json_file.write(model_json)
         # serialize weights to HDF5
         self.model.save_weights(file_loc+".h5")
-        print("\n Saved model to disk", file_name)
+        print("\n Saved model to disk: ", file_name ,'\n')
 
         return
 
@@ -70,7 +70,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            # 'recordings/rec24_dirtSide2/driving_log.csv',
+                            'recordings/rec24_dirtSide2/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec22_rightTurn4/driving_log.csv',
                             # 'recordings/rec23_after1stTurn2/driving_log.csv',
@@ -86,7 +86,7 @@ class qModelTrainer:
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            'recordings/rec5_udacity/data/driving_log.csv',
+                            # 'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
         print('Load dataset..')
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = lr_offset, enable_tiny_model = enable_tiny_model)
@@ -461,6 +461,7 @@ def main():
 
     elif args.tiny:
         print('Enable tiny model..')
+        print('Batch Size: ',args.batch_size)
         racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip, lr_offset = args.lr_offset )    
         racer_trainer.trainModel(args.epoch) 
 

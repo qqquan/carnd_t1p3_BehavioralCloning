@@ -237,7 +237,10 @@ class qDatasetManager:
         np_yy = self.getY() # full reference output
         num_total = len(np_yy)
 
+        if self.enable_aug_flip:
+            batch_size =int(batch_size/2)  #half the size, because  flipping later doubles the actual size 
         batch_start_idx = range(0, num_total, batch_size)
+
 
         while True:
             for start_idx in batch_start_idx:
@@ -271,7 +274,7 @@ class qDatasetManager:
 
                 yield (np_x, np_y)
 
-    def runValiBatchGenerator(self, batch_size=int(64*0.25)): #TODO: currently 25% of dataset is allocated for validation. make it configurable.
+    def runValiBatchGenerator(self, batch_size=int(64*0.1)): #TODO: currently 25% of dataset is allocated for validation. make it configurable.
 
 
         np_xx_loc = self.np_img_loc_X_Vali
