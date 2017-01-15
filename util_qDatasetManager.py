@@ -85,7 +85,7 @@ def getCrossValiSets(X, y, training_len=0.75):
 
     X_Train, X_Vali, y_Train, y_Vali =  sklearn.model_selection.train_test_split(   X, 
                                                                                     y, 
-                                                                                    train_size =0.75, 
+                                                                                    train_size =training_len, 
 
                                                                                     )
 
@@ -184,8 +184,11 @@ class qDatasetManager:
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
 
         if debug_size == None:
-            (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
-
+            if True == self.enable_tiny_model:
+                print('training split: ', 0.9)
+                (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm, training_len = 0.9)
+            else:
+                (self.np_img_loc_X_Train, self.np_img_loc_X_Vali, self.np_angle_y_Train , self.np_angle_y_Vali) = getCrossValiSets(self.np_img_loc_augm , self.np_angle_augm)
         else:
             #debug
             self.np_img_loc_X_Train =   self.np_img_loc_augm
@@ -215,6 +218,8 @@ class qDatasetManager:
 
         np_angle = self.getSteeringAngleList()
         np_angle_center = np_angle
+
+        print('offset_leftright_img: ', self.offset_leftright_img)
         np_angle_offset = self.offset_leftright_img  #  0.04 - 1 degree; 
         np_angle_left = np_angle_center +  np_angle_offset #the left camera sees a image that requires right turn
         np_angle_right = np_angle_center - np_angle_offset

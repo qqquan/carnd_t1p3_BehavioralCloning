@@ -14,8 +14,11 @@ from keras.optimizers import Adam
 
 
 class qModelTrainer:
+    '''
+    lr_offset: angle offset for left-right images
+    '''
 
-    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 255, enable_tiny_model = False):
+    def __init__(self, input_file_loc = None, enable_incremental_learning = False, debug_size = None, enable_aug_flip = True, batch_size = 255, enable_tiny_model = False, lr_offset = 0.1):
 
         if enable_incremental_learning:
             # new learning materials
@@ -50,13 +53,12 @@ class qModelTrainer:
                             'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
         print('Load dataset..')
-        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = 0.1, enable_tiny_model = enable_tiny_model)
+        self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = lr_offset, enable_tiny_model = enable_tiny_model)
 
         self.InputShape = self.DatasetMgr.getInputShape()
         self.batch_size = batch_size
         self.path_model_checkpoints = 'checkpoints'
 
-        print('Build model..')
         if enable_incremental_learning:
             self.reloadModel('model.json')
         elif enable_tiny_model:
@@ -70,7 +72,8 @@ class qModelTrainer:
 
     def buildModel_basic(self):
 
-        print('self.InputShape:', self.InputShape)
+        print('Build the basic model..')
+
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         
         self.model.add(Convolution2D(16, 11, 11, subsample=(9, 9),  border_mode="same"))
@@ -92,6 +95,8 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_tiny(self):
+        print('Build the tiny model..')
+
         self.model.add(Lambda(lambda x: x/127.5 - 1.,input_shape=self.InputShape))
         self.model.add(Convolution2D(2, 3, 3, border_mode='valid', input_shape=(16,32,1), activation='relu'))
         self.model.add(MaxPooling2D((4,4),(4,4),'valid'))
@@ -104,6 +109,8 @@ class qModelTrainer:
         self.model.summary()
 
     def buildModel_Desoto(self):
+        print('Build the Desoto model..')
+
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
 
         #scale image from 160x320 to 32x64
@@ -171,6 +178,7 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_nvidia(self):
+        print('Build the nvidia model..')
 
 
         self.model.add(BatchNormalization(input_shape=self.InputShape))
@@ -225,6 +233,7 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_commaai(self):
+        print('Build the comma.ai model..')
 
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
         
@@ -367,9 +376,10 @@ def getArgs():
     parser = argparse.ArgumentParser(description='Steering angle model trainer')
     parser.add_argument('--epoch', type=int, default=None, help='Number of epochs.')
     parser.add_argument('--batch_size', type=int, default=255, help='Batch Size.')
+    parser.add_argument('--lr_offset', type=float, default=0.1, help='offset value to compensate left-right image flipping.')
     parser.add_argument('--cfg', type=str, default="None", help='configuration commands')
     parser.add_argument("--increm", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
-    parser.add_argument("--enable_tiny_model", default=False, action="store_true" , help="enable tiny model")
+    parser.add_argument("--tiny", default=False, action="store_true" , help="enable tiny model")
     parser.add_argument("--no_flip", default=False, action="store_true" , help="enable incremental learning on top of a trained model")
     args = parser.parse_args()
 
@@ -391,7 +401,7 @@ def main():
         enable_flip = True
 
     if args.epoch == None:
-        racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3 )
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3, lr_offset = args.lr_offset )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
         epochs = 15 # sanity check if we can overfit a small example set --> check if loss is driven to zero
@@ -407,19 +417,19 @@ def main():
 
     elif args.increm:
         print('Enable Incremental Learning Method..')
-        racer_trainer = qModelTrainer(enable_incremental_learning=True, debug_size = None, batch_size = args.batch_size)    
+        racer_trainer = qModelTrainer(enable_incremental_learning=True, debug_size = None, batch_size = args.batch_size, lr_offset = args.lr_offset )    
         racer_trainer.trainModel_SavePerEpoch(args.epoch)
 
-    elif args.enable_tiny_model:
+    elif args.tiny:
         print('Enable tiny model..')
-        racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip)    
-        racer_trainer.trainModel_SavePerEpoch(args.epoch)
+        racer_trainer = qModelTrainer(enable_tiny_model=True, debug_size = None, batch_size = args.batch_size, enable_aug_flip= enable_flip, lr_offset = args.lr_offset )    
+        racer_trainer.trainModel_SavePerEpoch(args.epoch) 
 
     else:
         #normal training
 
 
-        racer_trainer = qModelTrainer(enable_incremental_learning=False, enable_aug_flip= enable_flip, batch_size = args.batch_size)    
+        racer_trainer = qModelTrainer(enable_incremental_learning=False, enable_aug_flip= enable_flip, batch_size = args.batch_size, lr_offset = args.lr_offset )    
 
         if 'per_epoch' in args.cfg:
             racer_trainer.trainModel_SavePerEpoch(args.epoch)
