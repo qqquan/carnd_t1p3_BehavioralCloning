@@ -70,7 +70,7 @@ class qModelTrainer:
                          ]  
         else:
              ls_records = [  
-                            'recordings/rec24_dirtSide2/driving_log.csv',
+                            # 'recordings/rec24_dirtSide2/driving_log.csv',
                             # 'recordings/rec13_sideDirt1/driving_log.csv',
                             # 'recordings/rec22_rightTurn4/driving_log.csv',
                             # 'recordings/rec23_after1stTurn2/driving_log.csv',
@@ -86,7 +86,7 @@ class qModelTrainer:
                             # 'recordings/rec10_right_turn/driving_log.csv',
                             # 'recordings/rec3_finer_steering/driving_log.csv',
                             # 'recordings/rec2_curve/driving_log.csv',
-                            # 'recordings/rec5_udacity/data/driving_log.csv',
+                            'recordings/rec5_udacity/data/driving_log.csv',
                          ]  
         print('Load dataset..')
         self.DatasetMgr = qDatasetManager(ls_records, debug_size = debug_size, enable_aug_flip = enable_aug_flip, offset_leftright_img = lr_offset, enable_tiny_model = enable_tiny_model)
