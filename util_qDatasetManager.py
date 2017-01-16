@@ -50,12 +50,13 @@ def prepImg(a_image, scale = IMG_SCALE):
 def prepAngle(np_angles):
 
     filter_threshold = 0.01 #0.25 degree
-    ls_angle_filtered = [angle if angle<filter_threshold else 0 for angle in np_angles] 
+    ls_angle_filtered = [angle if np.absolute(angle)<filter_threshold else 0 for angle in np_angles] 
     np_angle_filtered = np.array(ls_angle_filtered)  
 
     return np_angle_filtered
 
 def loadImgToNumpy(ls_img, img_scale, enable_aug_flip = False, enable_tiny_model=False):
+
     ls_image = []
     ls_image_flip = []
     for file_loc in ls_img:
@@ -182,6 +183,32 @@ class qDatasetManager:
 
         print('Augment data.. ')
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
+
+        #DEBUG
+
+        import pickle
+
+        import os.path
+        if os.path.isfile('meng_dataset.pickle') :
+            with open('meng_dataset.pickle', 'rb') as handle:
+                meng_dataset = pickle.load(handle)
+        meng_angles = np.array(meng_dataset['labels']).astype('float32')
+
+        counter_diff = 0
+        diff_avg = 0
+        idx = 0
+        for y, y_meng in zip(self.np_angle_augm, meng_angles):
+            idx +=1
+            diff = np.absolute(y-y_meng)
+            diff_avg += diff
+            diff_avg /= 2
+
+            if diff > 0.01:
+                counter_diff += 1
+                # print('y: ', y, ' ; y_meng: ', y_meng, ' ;  index: ', idx)
+        print('number of big angle data difference with meng: ', counter_diff)
+        print('average angle data difference with meng: ', diff_avg)
+
 
         if debug_size == None:
             if True == self.enable_tiny_model:
@@ -338,7 +365,9 @@ class qDatasetManager:
 
     def getSteeringAngleList(self):
         np_angle_orig = self.np_sim_sheet[:, qDatasetManager.IDX_COL_ANGLE]
-        return prepAngle(np_angle_orig)
+        
+        # return prepAngle(np_angle_orig)
+        return np_angle_orig
     
     def getCenterImgLocList(self):
         return self.np_sim_sheet[:, qDatasetManager.IDX_COL_CENTER_IMG]
