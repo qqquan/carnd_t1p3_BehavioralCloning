@@ -174,6 +174,7 @@ class qDatasetManager:
         self.np_sim_sheet = np.array([])
         self.np_sim_sheet = df_complete_records.values
 
+
         #remove row that has a small angle, because the image pattern of a straight lane are similar and are more repeatative than curve data 
         # self.np_sim_sheet = removeSmallValues(self.np_sim_sheet, colum = 3, thresh = 0.01, prob = 0.4 )
 
@@ -183,31 +184,6 @@ class qDatasetManager:
 
         print('Augment data.. ')
         self.np_img_loc_augm , self.np_angle_augm  = self.augmentNumpyDataset()
-
-        #DEBUG
-
-        import pickle
-
-        import os.path
-        if os.path.isfile('meng_dataset.pickle') :
-            with open('meng_dataset.pickle', 'rb') as handle:
-                meng_dataset = pickle.load(handle)
-        meng_angles = np.array(meng_dataset['labels']).astype('float32')
-
-        counter_diff = 0
-        diff_avg = 0
-        idx = 0
-        for y, y_meng in zip(self.np_angle_augm, meng_angles):
-            idx +=1
-            diff = np.absolute(y-y_meng)
-            diff_avg += diff
-            diff_avg /= 2
-
-            if diff > 0.01:
-                counter_diff += 1
-                # print('y: ', y, ' ; y_meng: ', y_meng, ' ;  index: ', idx)
-        print('number of big angle data difference with meng: ', counter_diff)
-        print('average angle data difference with meng: ', diff_avg)
 
 
         if debug_size == None:
