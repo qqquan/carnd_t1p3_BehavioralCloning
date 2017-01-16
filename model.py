@@ -102,7 +102,7 @@ class qModelTrainer:
             self.buildModel_tiny()
         else:
             self.model = Sequential()
-            self.buildModel_basic()
+            self.buildModel_commaai()
 
         self.clearSavedModels()
 
