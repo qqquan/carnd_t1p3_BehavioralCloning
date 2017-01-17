@@ -53,11 +53,14 @@ The following discusses the trade-offs and personal thoughts behind network desi
 
 #### Data Augmentation
 - Left-right Camera Compensation
+
 Two side cameras are mounted at two sides of the windshield. What left camera sees is simulating that the car leans on left. This requires additional steering to left. Same argument applies for the right camera. The extra steering required from left or right is an offset value, which is a hyper-parameter and requires tuning.
 
 - Horizontal Flip
+
 The normal track consists most of left-turn curves. In order to augment training data for right-turn curve situations, images are flipped horizontally from left to right.
 - Color Space
+
 RGB, HSV, YUV can offer different properties for the image recognition capability of the model. Further study is needed to investigate the performance difference. The final solution of this report uses RGB. 
 
 #### Data Normalization 
@@ -77,23 +80,50 @@ Depending on the number of extracted features and learning target, more FC layer
 A simple network architecture can easily get overfitted. Dropout() discards data during training and compensate neurons at prediction. It offers good capability to prevent overfitting, and is suitable for this simple network model.
 
 - Activation type: RELU vs ELU
+
 ELU promises faster learning, but the regression seems worse during testing. Relu is used for steady performance.
 
 - Number of Batch Normalization Layers
+
 Batch Normalization promises faster learning, but the regression seems extremely worse during testing. The guess is that dataset and model are not large enough for Batch Normalization to become effective. It is not used.
 
 ### 3.3 Hyper-parameters
 
-#### Batch size
-#### Epoch number
-#### Number of Layers
-#### CNN kernal size
-#### CNN stride 
-#### Random seed
+- Batch size
+
+Smaller batch size provides more back-prop iterations and can provide faster learning. The trade-off is that a larger batch size may have a better view for back-prop to descend and reduces possibility of local optimal point. A proper value depends on the dataset and the learning problem. In the final model and dataset, 128 seems provide a steady performance of the training result.
+
+- Epoch number
+
+Too large the number, the training overfits the model; too small, the model is under-trained. Saving model after each epoch alleviates the problem, but is very time consuming. The final model is from epoch 36.
+
+- CNN kernal size
+
+It depends on the complexity of useful features in the image or data input. Because the simulation environment is not complex, and the feature extraction only needs to differentiate lines from other shapes, a large kernel that grosses over data is sufficient. 
+
+- CNN stride 
+
+The testing shows the performance is sensitive to the stride size. One step less or more shows a big difference in performance. Reason is unclear. The value is hand-tuned carefully and painstakingly.
+
+- Random seed
+This is another hyper-parameter to tune or do trail-error. It affects weights&bias initialization, and has a great impact on the final performance in the testing.
 
 
-## 4. Trained Models
-  The similator excutes the same model differently every time it loads the same saved model and weights. The following are the ones found finishing the track during training. 
-  ### Basic 1 
-  ### Basic 2
-  ### Tiny 1
+## 4. Code Architecture
+
+The SW design splits training and data-processing into two separate modules: model.py, util_qDatasetManager.py. The simulation interfacing is in drive.py. 
+
+Scalability and portability is a key focus on the SW architecture design. The code runs on either AWS server or personal computer transparently. Even though the recorded dataset uses absolute local full path, the DatasetManager converts all to relative paths for the local machine. Therefore, additional recovery data can easily be stacked to a path list, and the code can run on both AWS and computer with a same dataset package. Hyper-parameter tunning is also supported through command-line arguments.
+
+- model.py
+-- Define network architecture
+-- Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
+
+- util_qDatasetManager.py
+-- Load dataset
+-- Pre-process data
+-- Provide Image generator for Keras to load image to memory on the fly.
+
+- drive.py
+-- Simulate the trained model on simulator
+
