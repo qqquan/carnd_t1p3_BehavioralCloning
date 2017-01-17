@@ -102,7 +102,12 @@ class qModelTrainer:
             self.buildModel_tiny()
         else:
             self.model = Sequential()
-            self.buildModel_commaai()
+            self.buildModel_basic()
+
+        # #visualize the model
+        # import pydot
+        # from keras.utils.visualize_util import plot
+        # plot(self.model, to_file='model.png')
 
         self.clearSavedModels()
 

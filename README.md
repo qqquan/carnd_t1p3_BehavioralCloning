@@ -52,19 +52,19 @@ The following discusses the trade-offs and personal thoughts behind network desi
   The car is mostly trained on the concrete road condition. Other road condition such as dirt or stone bridge has different tecture on the surface, and has a smaller portion in the training dataset. Additional dataset on those trouble spot would help the model learn those corner cases of driving conditions.
 
 #### Data Augmentation
-- Left-right Camera Compensation
+- Left-right Camera Compensation - 0.3 
 
-  Two side cameras are mounted at two sides of the windshield. What left camera sees is simulating that the car leans on left. This requires additional steering to left. Same argument applies for the right camera. The extra steering required from left or right is an offset value, which is a hyper-parameter and requires tuning.
+  Two side cameras are mounted at two sides of the windshield. What left camera sees is simulating that the car leans on left. This requires additional steering to left. Same argument applies for the right camera. The extra steering required from left or right is an offset value, which is a hyper-parameter and requires tuning. 
 
 - Horizontal Flip
 
-The normal track consists most of left-turn curves. In order to augment training data for right-turn curve situations, images are flipped horizontally from left to right.
+  The normal track consists most of left-turn curves. In order to augment training data for right-turn curve situations, images are flipped horizontally from left to right.
 - Color Space
 
   RGB, HSV, YUV can offer different properties for the image recognition capability of the model. Further study is needed to investigate the performance difference. The final solution of this report uses RGB. 
 
 #### Data Normalization 
-In order to have zero-mean and small-variance input data, the image is normalized to (-0.5, 0.5) with the following formula: x/127.5 - 1.0
+  In order to have zero-mean and small-variance input data, the image is normalized to (-0.5, 0.5) with the following formula: x/127.5 - 1.0
 
 ### 3.2 Model Architecture
 - Number of CNN layers
@@ -89,13 +89,13 @@ ELU promises faster learning, but the regression seems worse during testing. Rel
 
 ### 3.3 Hyper-parameters
 
-- Batch size
+- Batch size - 128
 
   Smaller batch size provides more back-prop iterations and can provide faster learning. The trade-off is that a larger batch size may have a better view for back-prop to descend and reduces possibility of local optimal point. A proper value depends on the dataset and the learning problem. In the final model and dataset, 128 seems provide a steady performance of the training result.
 
-- Epoch number
+- Epoch number - 36
 
-  Too large the number, the training overfits the model; too small, the model is under-trained. Saving model after each epoch alleviates the problem, but is very time consuming. The final model is from epoch 36.
+  Too large the number, the training overfits the model; too small, the model is under-trained. Saving model after each epoch alleviates the problem, but is very time consuming. 
 
 - CNN kernal size
 
