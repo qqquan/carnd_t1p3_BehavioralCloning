@@ -25,7 +25,7 @@ Non-trainable params: 0.
 
 ## 2. Training Strategy
 1. The base dataset used is from Udacity, so the test result can be easily communicated among the community.
-2. Try established steering training models, such as Nvida model and comma.ai model. The preliminary result is that car only drive straight for a short time, then start weaving. The hypothesis is that the dataset is not big enough for those two complex models. So we can either add more training data, or reduce the model complexity.
+2. Try established steering training models, such as Nvidia model and comma.ai model. The preliminary result is that car only drive straight for a short time, then start weaving. The hypothesis is that the dataset is not big enough for those two complex models. So we can either add more training data, or reduce the model complexity.
 3. Based on evaluation of the simulation conditions, there are relatively few features, such as clear lane mark or road edge. The graphic is relatively simple pattern, so a simple Machine Learning network should be able to handle.
 4. Starting from the basic one CNN network, the performance is not good. Additional layer is added until that the performance shows the model can handle both straight lane and curve. In the end, two layers of CNN is deemed to be sufficient to recognize road side edges and lane marks. 
 5. Tune hyper-parameters of the chosen model.
@@ -114,11 +114,11 @@ ELU promises faster learning, but the regression seems worse during testing. Rel
 
 The SW design splits training and data-processing into two separate modules: model.py, util_qDatasetManager.py. The simulation interfacing is in drive.py. 
 
-Scalability and portability is a key focus on the SW architecture design. The code runs on either AWS server or personal computer transparently. Even though the recorded dataset uses absolute local full path, the DatasetManager converts all to relative paths for the local machine. Therefore, additional recovery data can easily be stacked to a path list, and the code can run on both AWS and computer with a same dataset package. Hyper-parameter tunning is also supported through command-line arguments.
+Scalability and portability is a key focus on the SW architecture design. The code runs on either AWS server or personal computer transparently. Even though the recorded dataset uses absolute local full path, the DatasetManager converts all to relative paths for the local machine. Therefore, additional recovery data can easily be stacked to a path list, and the code can run on both AWS and computer with a same dataset package. Hyper-parameter tunning is also supported through command-line arguments. The model.py also support easy swap of different model architectures for comparison.
 
 - model.py
 
-    - Define network architecture
+    - Define network architecture. 
     - Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
 
 - util_qDatasetManager.py
