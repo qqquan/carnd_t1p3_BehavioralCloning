@@ -54,14 +54,14 @@ The following discusses the trade-offs and personal thoughts behind network desi
 #### Data Augmentation
 - Left-right Camera Compensation
 
-Two side cameras are mounted at two sides of the windshield. What left camera sees is simulating that the car leans on left. This requires additional steering to left. Same argument applies for the right camera. The extra steering required from left or right is an offset value, which is a hyper-parameter and requires tuning.
+  Two side cameras are mounted at two sides of the windshield. What left camera sees is simulating that the car leans on left. This requires additional steering to left. Same argument applies for the right camera. The extra steering required from left or right is an offset value, which is a hyper-parameter and requires tuning.
 
 - Horizontal Flip
 
 The normal track consists most of left-turn curves. In order to augment training data for right-turn curve situations, images are flipped horizontally from left to right.
 - Color Space
 
-RGB, HSV, YUV can offer different properties for the image recognition capability of the model. Further study is needed to investigate the performance difference. The final solution of this report uses RGB. 
+  RGB, HSV, YUV can offer different properties for the image recognition capability of the model. Further study is needed to investigate the performance difference. The final solution of this report uses RGB. 
 
 #### Data Normalization 
 In order to have zero-mean and small-variance input data, the image is normalized to (-0.5, 0.5) with the following formula: x/127.5 - 1.0
@@ -69,15 +69,15 @@ In order to have zero-mean and small-variance input data, the image is normalize
 ### 3.2 Model Architecture
 - Number of CNN layers
 
-More layers of CNN handles more complex data, while requires more training examples. 
+  More layers of CNN handles more complex data, while requires more training examples. 
 
 - Number of Fully Connected(FC) Layers
 
-Depending on the number of extracted features and learning target, more FC layer handles more difficult target. Because the simulation environment is relatively simple, single FC layer that matches to the single regression value.
+  Depending on the number of extracted features and learning target, more FC layer handles more difficult target. Because the simulation environment is relatively simple, single FC layer that matches to the single regression value.
 
 - Dropout
 
-A simple network architecture can easily get overfitted. Dropout() discards data during training and compensate neurons at prediction. It offers good capability to prevent overfitting, and is suitable for this simple network model.
+  A simple network architecture can easily get overfitted. Dropout() discards data during training and compensate neurons at prediction. It offers good capability to prevent overfitting, and is suitable for this simple network model.
 
 - Activation type: RELU vs ELU
 
@@ -85,29 +85,29 @@ ELU promises faster learning, but the regression seems worse during testing. Rel
 
 - Number of Batch Normalization Layers
 
-Batch Normalization promises faster learning, but the regression seems extremely worse during testing. The guess is that dataset and model are not large enough for Batch Normalization to become effective. It is not used.
+  Batch Normalization promises faster learning, but the regression seems extremely worse during testing. The guess is that dataset and model are not large enough for Batch Normalization to become effective. It is not used.
 
 ### 3.3 Hyper-parameters
 
 - Batch size
 
-Smaller batch size provides more back-prop iterations and can provide faster learning. The trade-off is that a larger batch size may have a better view for back-prop to descend and reduces possibility of local optimal point. A proper value depends on the dataset and the learning problem. In the final model and dataset, 128 seems provide a steady performance of the training result.
+  Smaller batch size provides more back-prop iterations and can provide faster learning. The trade-off is that a larger batch size may have a better view for back-prop to descend and reduces possibility of local optimal point. A proper value depends on the dataset and the learning problem. In the final model and dataset, 128 seems provide a steady performance of the training result.
 
 - Epoch number
 
-Too large the number, the training overfits the model; too small, the model is under-trained. Saving model after each epoch alleviates the problem, but is very time consuming. The final model is from epoch 36.
+  Too large the number, the training overfits the model; too small, the model is under-trained. Saving model after each epoch alleviates the problem, but is very time consuming. The final model is from epoch 36.
 
 - CNN kernal size
 
-It depends on the complexity of useful features in the image or data input. Because the simulation environment is not complex, and the feature extraction only needs to differentiate lines from other shapes, a large kernel that grosses over data is sufficient. 
+  It depends on the complexity of useful features in the image or data input. Because the simulation environment is not complex, and the feature extraction only needs to differentiate lines from other shapes, a large kernel that grosses over data is sufficient. 
 
 - CNN stride 
 
-The testing shows the performance is sensitive to the stride size. One step less or more shows a big difference in performance. Reason is unclear. The value is hand-tuned carefully and painstakingly.
+  The testing shows the performance is sensitive to the stride size. One step less or more shows a big difference in performance. Reason is unclear. The value is hand-tuned carefully and painstakingly.
 
 - Random seed
 
-This is another hyper-parameter to tune or do trail-error. It affects weights&bias initialization, and has a great impact on the final performance in the testing.
+  This is another hyper-parameter to tune or do trial-and-error. It affects weights&bias initialization, and has a great impact on the final performance in the testing.
 
 
 ## 4. Code Architecture
