@@ -118,16 +118,24 @@ Scalability and portability is a key focus on the SW architecture design. The co
 
 - model.py
 
--- Define network architecture
--- Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
+    - Define network architecture
+    - Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
 
 - util_qDatasetManager.py
 
--- Load dataset
--- Pre-process data
--- Provide Image generator for Keras to load image to memory on the fly.
+    - Load dataset
+    - Pre-process data
+    - Provide Image generator for Keras to load image to memory on the fly.
 
 - drive.py
 
--- Simulate the trained model on simulator
+    - Simulate the trained model on simulator.
+
+- model.json
+
+    - Trained model.
+
+- model.h5
+
+    - Trained weights.
 
