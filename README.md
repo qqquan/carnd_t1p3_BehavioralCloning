@@ -106,6 +106,7 @@ It depends on the complexity of useful features in the image or data input. Beca
 The testing shows the performance is sensitive to the stride size. One step less or more shows a big difference in performance. Reason is unclear. The value is hand-tuned carefully and painstakingly.
 
 - Random seed
+
 This is another hyper-parameter to tune or do trail-error. It affects weights&bias initialization, and has a great impact on the final performance in the testing.
 
 
@@ -116,14 +117,17 @@ The SW design splits training and data-processing into two separate modules: mod
 Scalability and portability is a key focus on the SW architecture design. The code runs on either AWS server or personal computer transparently. Even though the recorded dataset uses absolute local full path, the DatasetManager converts all to relative paths for the local machine. Therefore, additional recovery data can easily be stacked to a path list, and the code can run on both AWS and computer with a same dataset package. Hyper-parameter tunning is also supported through command-line arguments.
 
 - model.py
+
 -- Define network architecture
 -- Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
 
 - util_qDatasetManager.py
+
 -- Load dataset
 -- Pre-process data
 -- Provide Image generator for Keras to load image to memory on the fly.
 
 - drive.py
+
 -- Simulate the trained model on simulator
 
