@@ -134,6 +134,9 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_tiny(self):
+        '''
+            from Mengxi Wu
+        '''
         print('Build the tiny model..')
 
         self.model.add(Lambda(lambda x: x/127.5 - 1.,input_shape=self.InputShape))
@@ -148,6 +151,9 @@ class qModelTrainer:
         self.model.summary()
 
     def buildModel_Desoto(self):
+        '''
+            from Stewart Desoto
+        '''
         print('Build the Desoto model..')
 
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
@@ -217,6 +223,9 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_nvidia(self):
+        '''
+            from http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf
+        '''
         print('Build the nvidia model..')
 
 
@@ -272,6 +281,9 @@ class qModelTrainer:
         self.model.summary() 
 
     def buildModel_commaai(self):
+        '''
+            from https://github.com/commaai/research/blob/master/train_steering_model.py
+        '''
         print('Build the comma.ai model..')
 
         self.model.add(Lambda(lambda x: x/127.5 - 1.0,input_shape=self.InputShape, output_shape=self.InputShape))
