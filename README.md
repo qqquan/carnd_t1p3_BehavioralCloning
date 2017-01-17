@@ -91,6 +91,10 @@ The following discusses the trade-offs and observations behind network designs a
 
 ### 3.3 Hyper-parameters
 
+- Optimizer - Adam
+
+  The default learning rate of 0.001 is used. The testing shows that lowering the learning rate to 0.0001 does not help.
+
 - Batch size - 128
 
   Smaller batch size provides more back-prop iterations and can provide faster learning. The trade-off is that a larger batch size may have a better view for back-prop to descend and reduces possibility of local optimal point. A proper value depends on the dataset and the learning problem. In the final model and dataset, 128 seems provide a steady performance of the training result.
