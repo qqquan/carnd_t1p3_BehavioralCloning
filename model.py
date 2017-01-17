@@ -457,6 +457,7 @@ def main():
         enable_flip = True
 
     if args.epoch == None:
+        print('Enter debugging mode - only a small subset of data is used' )
         racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 3, lr_offset = args.lr_offset )
         # racer_trainer = qModelTrainer(enable_incremental_learning=False, debug_size = 2)
 
@@ -466,7 +467,8 @@ def main():
         for epo in range(epochs):
             generator_train = racer_trainer.DatasetMgr.runBatchGenerator
             num_samples = racer_trainer.DatasetMgr.getInputNum()
-            racer_trainer.model.fit_generator(generator_train(batch_size=1), num_samples, 1 )
+            print('epo: ', epo)
+            racer_trainer.model.fit_generator( generator_train(batch_size=2), num_samples, 1 )
 
             print('Epoch: ', epo+1)
             racer_trainer.debugModel()

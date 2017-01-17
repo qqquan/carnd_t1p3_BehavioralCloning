@@ -233,7 +233,6 @@ class qDatasetManager:
 
     def runBatchGenerator(self, batch_size=64):
 
-
         np_xx_loc = self.getImgLocArray()
 
 
@@ -273,7 +272,6 @@ class qDatasetManager:
                 if self.enable_aug_flip == True:
                     np_x = np.vstack((np_x, np_x_flip))
                     np_y = np.vstack((np_y, np_y_flip))
-
 
                 yield (np_x, np_y)
 

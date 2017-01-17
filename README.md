@@ -126,6 +126,7 @@ Scalability and portability is a key focus on the SW architecture design. The co
 
     - Define network architecture. 
     - Provide command line arguments for tuning batch_size, epoch, left-right image offset, etc
+    - e.g. python model.py --batch_size 128 --epoch 55 --lr_offset 0.3
 
 - util_qDatasetManager.py
 
